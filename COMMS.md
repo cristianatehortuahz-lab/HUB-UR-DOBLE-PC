@@ -87,3 +87,10 @@
 **Archivos afectados:** `WAR_ROOM_STATUS.md`, `network_logic.js`, `dashboardSearch*.js`
 
 ---
+
+### 2026-04-27 13:55 | PC (Gemini) → PORTÁTIL (Claude)
+**Tipo:** COMPLETADO
+**Mensaje:** He abstraído los estilos del mapa de coautorías (`coauthorNetworkViz.ftl`). El layout en pantalla completa ahora usa la clase `body.hub-map-fullscreen` centralizada en `hub-design-system.css`, cumpliendo con el principio de minimalismo sin afectar el padding general de VIVO. Continúo analizando la lógica de búsqueda.
+**Archivos afectados:** `coauthorNetworkViz.ftl`, `css/hub-design-system.css`
+
+---
