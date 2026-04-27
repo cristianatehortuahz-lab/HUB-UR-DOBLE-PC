@@ -717,12 +717,38 @@
         const el = document.getElementById('comms-log');
         const msgs = text.split('###').map(s => s.trim()).filter(s => s.length > 0 && s.includes('|'));
         el.innerHTML = '';
+        
+        window.activeTasks = window.activeTasks || []; // Keep existing COMMS tasks or empty
+        
         msgs.slice(-6).forEach(m => {
           const lines = m.split('\n');
           const header = lines[0].trim();
           const content = lines.slice(1).join('<br>').replace(/\*\*/g, '').replace(/`/g, '');
+          
           const isUser = header.includes('Comandante →');
           const col = isUser ? '#00f5a0' : '#e63946';
+          
+          // Extracción dinámica de archivos mencionados para animar avatares
+          let agentKey = null;
+          if (header.includes('Gemini')) agentKey = 'Gemini';
+          if (header.includes('Claude35')) agentKey = 'Claude35';
+          if (header.includes('DeepSeek')) agentKey = 'DeepSeek';
+          if (header.includes('ClaudeCode')) agentKey = 'ClaudeCode';
+          
+          // Buscar palabras que terminen en .py, .js, .css, .ftl, .md
+          const fileMatch = content.match(/[\w-]+\.(py|js|css|ftl|md)/gi);
+          if (fileMatch && agentKey && !isUser) {
+             const fName = fileMatch[0];
+             // Add node if not exists
+             let nIdx = nodes.findIndex(n => n.name === fName);
+             if (nIdx === -1) {
+                const cx = W / 2, cy = H / 2, r = Math.min(W, H) * 0.4; // Outer circle
+                const a = Math.random() * Math.PI * 2;
+                nodes.push({ name: fName, icon: '✨', status: 'wip', x: cx + Math.cos(a) * r, y: cy + Math.sin(a) * r, nodeR: 20 });
+             }
+             window.activeTasks.push({ agent: agentKey, files: [fName] });
+          }
+
           const div = document.createElement('div');
           div.style.cssText = `background: rgba(255,255,255,0.03); padding: 6px; border-radius: 4px; border-left: 2px solid ${col}; margin-bottom: 2px;`;
           div.innerHTML = `<div style="color:${col}; font-weight:bold; margin-bottom:2px;">${header}</div><div>${content}</div>`;
