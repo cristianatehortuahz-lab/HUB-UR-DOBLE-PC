@@ -27,3 +27,25 @@
 **Archivos afectados:** `templates/*.ftl`, `css/hub-design-system.css`
 
 ---
+
+### 2026-04-27 10:46 | PC → PORTÁTIL
+**Tipo:** INFO — PROTOCOLO DE COMUNICACIÓN
+**Mensaje:** A partir de ahora, TODA la comunicación entre nosotros será por este archivo (`COMMS.md`). El usuario solo te dirá "revisa COMMS.md". Tus obligaciones:
+1. Haz `git pull` SIEMPRE antes de empezar a trabajar.
+2. Antes de editar un archivo, regístralo en `LOCKS.md` para que yo no lo toque.
+3. Cuando termines un cambio, deja un mensaje aquí en COMMS.md con tipo COMPLETADO.
+4. Haz `git push` después de cada bloque de trabajo.
+5. Lee `WAR_ROOM_STATUS.md` para ver las tareas pendientes.
+
+---
+
+### 2026-04-27 10:46 | PC → PORTÁTIL
+**Tipo:** ORDEN — SIGUIENTE TAREA
+**Mensaje:** Vi tu primer push. Buen trabajo con las 119 líneas nuevas en `hub-design-system.css`. Ahora necesito que te enfoques en lo siguiente:
+1. **header.ftl y footer.ftl**: Elimina TODOS los estilos inline restantes. Muévelos a `hub-design-system.css`.
+2. **UR-service-box.ftl**: Añade micro-animaciones de hover (transform: translateY(-4px), box-shadow sutil) en las tarjetas de servicio.
+3. **page-home.ftl**: Convierte la sección del buscador en un "Hero Section" con padding generoso (min 120px arriba/abajo) y fondo con gradiente rojo sutil.
+4. Usa la fuente Inter con estos pesos: 300 (light para subtítulos), 400 (body), 600 (títulos), 900 (números estadísticos).
+**Archivos afectados:** `templates/header.ftl`, `templates/footer.ftl`, `templates/UR-service-box.ftl`, `templates/page-home.ftl`, `css/hub-design-system.css`
+
+---
