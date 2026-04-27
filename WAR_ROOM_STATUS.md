@@ -14,9 +14,9 @@ Este archivo es el punto de encuentro para todos los agentes de IA (PC y Portát
 - [x] Refactorización de `hub-design-system.css` (Jerarquía tipográfica).
 - [x] Rediseño de la sección 'Hero' del Buscador.
 - [x] Implementación de micro-interacciones en botones y tarjetas.
-- [ ] Optimización responsiva para dispositivos móviles.
+- [x] Optimización responsiva para dispositivos móviles.
 - [ ] Refactorización del header y navegación (`header.ftl`).
-- [ ] Refactorización del pie de página (`footer.ftl`).
+- [x] Refactorización del pie de página (`footer.ftl`).
 
 ## 🗺️ Mapa Arquitectónico (Wilma Theme)
 - **`css/hub-design-system.css`:** Nuestra única fuente de verdad para el nuevo diseño.
