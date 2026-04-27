@@ -7,7 +7,7 @@ ${stylesheets.add('
 
 
 <noscript>
-  <p style="padding: 20px;background-color:#f8ffb7">
+  <p class="browse-notice">
     ${i18n().browse_page_javascript_one}
     <a href="${urls.base}/browse" title="${i18n().index_page}">${i18n().index_page}</a>
     ${i18n().browse_page_javascript_two}
