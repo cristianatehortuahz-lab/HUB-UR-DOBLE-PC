@@ -666,7 +666,7 @@
     // Fetch Live COMMS (solo para extraer tareas activas en background)
     async function fetchComms() {
       try {
-        const r = await fetch(`https://api.github.com/repos/${REPO}/contents/COMMS.md`, { headers: { 'Cache-Control': 'no-cache' } });
+        const r = await fetch(`https://api.github.com/repos/${REPO}/contents/COMMS.md?t=${Date.now()}`);
         if (!r.ok) return;
         const data = await r.json();
         const text = decodeURIComponent(escape(atob(data.content)));
@@ -772,7 +772,7 @@
     window.globalLocks = [];
     async function fetchLocks() {
       try {
-        const r = await fetch(`https://api.github.com/repos/${REPO}/contents/LOCKS.md`, { headers: { 'Cache-Control': 'no-cache' } });
+        const r = await fetch(`https://api.github.com/repos/${REPO}/contents/LOCKS.md?t=${Date.now()}`);
         if (!r.ok) return;
         const data = await r.json();
         const text = decodeURIComponent(escape(atob(data.content)));
@@ -787,7 +787,7 @@
 
     async function fetchStatus() {
       try {
-        const r = await fetch(`https://api.github.com/repos/${REPO}/contents/WAR_ROOM_STATUS.md`, { headers: { 'Cache-Control': 'no-cache' } });
+        const r = await fetch(`https://api.github.com/repos/${REPO}/contents/WAR_ROOM_STATUS.md?t=${Date.now()}`);
         if (!r.ok) return;
         const data = await r.json();
         const text = decodeURIComponent(escape(atob(data.content)));
