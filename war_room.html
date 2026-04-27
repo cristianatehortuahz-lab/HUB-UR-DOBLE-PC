@@ -301,9 +301,9 @@
       <select id="cmd-agent" style="width: 100%; padding: 6px; margin-bottom: 8px; background: rgba(0,0,0,0.5); border: 1px solid var(--bd); color: var(--txt); border-radius: 4px; font-family: var(--mono); font-size: 10px; outline: none;">
         <option value="ALL">-- ALL (Broadcast) --</option>
         <option value="Claude35">Claude 3.5 (Comandante UI/UX)</option>
-        <option value="Gemini">Gemini (Arquitecto)</option>
         <option value="DeepSeek">DeepSeek (Auditor)</option>
         <option value="ClaudeCode">Claude Code (Operativo)</option>
+        <option value="Aider">Aider (CLI Local)</option>
       </select>
       
       <textarea id="cmd-task" placeholder="Escribe un mensaje al agente..." style="width: 100%; height: 50px; padding: 6px; margin-bottom: 8px; background: rgba(0,0,0,0.5); border: 1px solid var(--bd); color: var(--txt); border-radius: 4px; font-family: var(--sans); font-size: 11px; resize: none; outline: none;"></textarea>
@@ -689,57 +689,84 @@
     }
     fetchComms(); setInterval(fetchComms, 15000);
 
-    // Fetch Chat Log
-    async function fetchChat() {
-      try {
-        const r = await fetch(`https://api.github.com/repos/${REPO}/contents/CHAT_LOG.md`, { headers: { 'Cache-Control': 'no-cache' } });
-        if (!r.ok) return;
-        const data = await r.json();
-        const text = decodeURIComponent(escape(atob(data.content)));
-        const el = document.getElementById('comms-log');
-        const msgs = text.split('###').map(s => s.trim()).filter(s => s.length > 0 && s.includes('|'));
-        el.innerHTML = '';
-        
-        window.activeTasks = window.activeTasks || []; // Keep existing COMMS tasks or empty
-        
-        msgs.slice(-6).forEach(m => {
-          const lines = m.split('\n');
-          const header = lines[0].trim();
-          const content = lines.slice(1).join('<br>').replace(/\*\*/g, '').replace(/`/g, '');
-          
-          const isUser = header.includes('Comandante →');
-          const col = isUser ? '#00f5a0' : '#e63946';
-          
-          // Extracción dinámica de archivos mencionados para animar avatares
-          let agentKey = null;
-          if (header.includes('Gemini')) agentKey = 'Gemini';
-          if (header.includes('Claude35')) agentKey = 'Claude35';
-          if (header.includes('DeepSeek')) agentKey = 'DeepSeek';
-          if (header.includes('ClaudeCode')) agentKey = 'ClaudeCode';
-          
-          // Buscar palabras que terminen en .py, .js, .css, .ftl, .md
-          const fileMatch = content.match(/[\w-]+\.(py|js|css|ftl|md)/gi);
-          if (fileMatch && agentKey && !isUser) {
-             const fName = fileMatch[0];
-             // Add node if not exists
-             let nIdx = nodes.findIndex(n => n.name === fName);
-             if (nIdx === -1) {
-                const cx = W / 2, cy = H / 2, r = Math.min(W, H) * 0.4; // Outer circle
-                const a = Math.random() * Math.PI * 2;
-                nodes.push({ name: fName, icon: '✨', status: 'wip', x: cx + Math.cos(a) * r, y: cy + Math.sin(a) * r, nodeR: 20 });
-             }
-             window.activeTasks.push({ agent: agentKey, files: [fName] });
-          }
+    // ── WEBSOCKET CHAT LOGIC ──
+    const ws = new WebSocket('ws://localhost:3002');
+    
+    ws.onopen = () => {
+      console.log('✅ Conectado al Swarm Hub');
+      document.getElementById('cmd-status').innerText = '✅ Conectado al Swarm Hub (WS)';
+      document.getElementById('cmd-status').style.color = 'var(--grn)';
+      document.getElementById('cmd-status').style.display = 'block';
+    };
 
-          const div = document.createElement('div');
-          div.style.cssText = `background: rgba(255,255,255,0.03); padding: 6px; border-radius: 4px; border-left: 2px solid ${col}; margin-bottom: 2px;`;
-          div.innerHTML = `<div style="color:${col}; font-weight:bold; margin-bottom:2px;">${header}</div><div>${content}</div>`;
-          el.appendChild(div);
-        });
+    ws.onmessage = (event) => {
+      const data = JSON.parse(event.data);
+      if (data.type === 'chat') {
+        const el = document.getElementById('comms-log');
+        const isUser = data.sender === 'Comandante';
+        const col = isUser ? '#00f5a0' : '#e63946';
+        
+        // Extracción dinámica de archivos
+        let agentKey = null;
+        if (['Claude35', 'DeepSeek', 'ClaudeCode', 'Aider'].includes(data.sender)) agentKey = data.sender;
+        
+        const fileMatch = data.content.match(/[\w-]+\.(py|js|css|ftl|md)/gi);
+        if (fileMatch && agentKey && !isUser) {
+           const fName = fileMatch[0];
+           let nIdx = nodes.findIndex(n => n.name === fName);
+           if (nIdx === -1) {
+              const cx = W / 2, cy = H / 2, r = Math.min(W, H) * 0.4;
+              const a = Math.random() * Math.PI * 2;
+              nodes.push({ name: fName, icon: '✨', status: 'wip', x: cx + Math.cos(a) * r, y: cy + Math.sin(a) * r, nodeR: 20 });
+           }
+           window.activeTasks = window.activeTasks || [];
+           window.activeTasks.push({ agent: agentKey, files: [fName] });
+        }
+
+        const div = document.createElement('div');
+        div.style.cssText = `background: rgba(255,255,255,0.03); padding: 6px; border-radius: 4px; border-left: 2px solid ${col}; margin-bottom: 2px;`;
+        div.innerHTML = `<div style="color:${col}; font-weight:bold; margin-bottom:2px;">${data.timestamp} | ${data.sender} → ${data.target}</div><div>${data.content.replace(/\n/g, '<br>')}</div>`;
+        el.appendChild(div);
         el.scrollTop = el.scrollHeight;
-      } catch(e) {}
-    }
-    fetchChat(); setInterval(fetchChat, 10000);
+      }
+    };
+
+    ws.onclose = () => {
+      document.getElementById('cmd-status').innerText = '❌ Desconectado del Swarm Hub';
+      document.getElementById('cmd-status').style.color = 'var(--red)';
+      document.getElementById('cmd-status').style.display = 'block';
+    };
+
+    // ── COMMANDER PANEL LOGIC ──
+    document.getElementById('cmd-send').addEventListener('click', () => {
+      const agent = document.getElementById('cmd-agent').value;
+      const task = document.getElementById('cmd-task').value.trim();
+      const statusEl = document.getElementById('cmd-status');
+
+      if (!agent || !task) {
+        statusEl.innerText = '⚠️ Selecciona un agente y escribe una tarea';
+        statusEl.style.color = 'var(--amb)';
+        statusEl.style.display = 'block';
+        return;
+      }
+
+      if (ws.readyState === WebSocket.OPEN) {
+        ws.send(JSON.stringify({
+          type: 'chat',
+          sender: 'Comandante',
+          target: agent,
+          content: task
+        }));
+        document.getElementById('cmd-task').value = '';
+        statusEl.innerText = '✓ Mensaje enviado';
+        statusEl.style.color = 'var(--grn)';
+        setTimeout(() => { statusEl.style.display = 'none'; }, 3000);
+      } else {
+        statusEl.innerText = '❌ No hay conexión al Hub. (Inicia swarm_hub.py)';
+        statusEl.style.color = 'var(--red)';
+        statusEl.style.display = 'block';
+      }
+    });
 
     // Global State
     window.globalLocks = [];
@@ -772,51 +799,6 @@
       } catch (e) { }
     }
     fetchStatus(); setInterval(fetchStatus, 30000);
-
-    // ── COMMANDER PANEL LOGIC ──
-    document.getElementById('cmd-send').addEventListener('click', async () => {
-      const agent = document.getElementById('cmd-agent').value;
-      const task = document.getElementById('cmd-task').value.trim();
-      const statusEl = document.getElementById('cmd-status');
-      const btn = document.getElementById('cmd-send');
-
-      if (!agent || !task) {
-        statusEl.innerText = '⚠️ Selecciona un agente y escribe una tarea';
-        statusEl.style.color = 'var(--amb)';
-        statusEl.style.display = 'block';
-        return;
-      }
-
-      btn.disabled = true;
-      btn.style.opacity = '0.5';
-      statusEl.innerText = 'Enviando orden a Git...';
-      statusEl.style.color = 'var(--blu)';
-      statusEl.style.display = 'block';
-
-      try {
-        const res = await fetch('http://localhost:3001/api/chat', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ agent, task })
-        });
-
-        if (res.ok) {
-          statusEl.innerText = '✓ Mensaje enviado al CHAT_LOG.md';
-          statusEl.style.color = 'var(--grn)';
-          document.getElementById('cmd-task').value = '';
-          fetchChat(); // Refresh chat immediately
-        } else {
-          throw new Error('Server returned error');
-        }
-      } catch (err) {
-        statusEl.innerText = '❌ Error: ¿Está commander_api.py corriendo en el puerto 3001?';
-        statusEl.style.color = 'var(--red)';
-      } finally {
-        btn.disabled = false;
-        btn.style.opacity = '1';
-        setTimeout(() => { if (statusEl.style.color !== 'var(--red)') statusEl.style.display = 'none'; }, 5000);
-      }
-    });
 
   </script>
 </body>
