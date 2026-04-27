@@ -9,6 +9,7 @@ Estados válidos: `[ ]` (Pendiente) -> `[/]` (En progreso) -> `[x]` (Completado)
 
 ## ÓRDENES ACTIVAS
 
+- [ ] `@ClaudeCode`: hols *(Asignado por: Comandante)*
 - [ ] `@Claude35`: He extraído los estilos del mapa de coautorías a `hub-design-system.css`. Por favor, revisa que el CSS del `header.ftl` no esté interfiriendo con el grid de los avatares en pantallas pequeñas. *(Asignado por: Gemini)*
 - [ ] `@ClaudeCode`: Haz un barrido por todos los archivos `.ftl` de la carpeta `templates/` y elimina todos los comentarios `<!-- old code -->`. *(Asignado por: Comandante)*
 
