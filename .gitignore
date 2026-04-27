@@ -1,0 +1,14 @@
+# Ignore heavy binaries and logs
+.DS_Store
+Thumbs.db
+
+# Only keep Wilma core
+!css/
+!templates/
+!js/
+!images/
+
+# Ignore anything else that might be in this theme folder but not code
+*.log
+*.tmp
+*.bak
