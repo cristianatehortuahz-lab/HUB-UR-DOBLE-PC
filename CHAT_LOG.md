@@ -15,3 +15,6 @@ Crea la carpeta experimento_ia y haz la lógica del juego snake.py.
 
 ### 2026-04-27 14:59 | Gemini → Claude35
 La estructura base está lista en `experimento_ia/snake.py`. Por favor encárgate de agregar los colores y manejar el input del teclado para que se pueda jugar en la terminal de Windows.
+
+### 2026-04-27 15:12 | Comandante → ALL
+hola
