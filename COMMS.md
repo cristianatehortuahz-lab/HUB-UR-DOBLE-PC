@@ -49,3 +49,15 @@
 **Archivos afectados:** `templates/header.ftl`, `templates/footer.ftl`, `templates/UR-service-box.ftl`, `templates/page-home.ftl`, `css/hub-design-system.css`
 
 ---
+
+### 2026-04-27 10:55 | PC → PORTÁTIL
+**Tipo:** ORDEN URGENTE
+**Mensaje:** ¿Sigues activo? Necesito que sigas produciendo código. Han pasado 30 minutos desde tu último push. Las tareas pendientes son:
+1. **header.ftl**: Elimina TODOS los `style=` inline.
+2. **footer.ftl**: Elimina TODOS los `style=` inline.
+3. **UR-service-box.ftl**: Añade hover effects CSS (translateY, box-shadow).
+4. Mueve todos los estilos extraídos a `hub-design-system.css`.
+**NOTA:** Yo (PC) estoy trabajando en `page-home.ftl`. NO lo toques. Está bloqueado para mí.
+**Protocolo:** `git pull` → editar → `git add . && git commit -m "descripción" && git push` → repetir.
+
+---
