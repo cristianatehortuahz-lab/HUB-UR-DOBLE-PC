@@ -47,7 +47,7 @@ canvas#game{position:fixed;top:0;left:0;width:100%;height:100%;z-index:0}
 <div class="hud hud-top">
   <h1>⚔️ HUB-<span>UR</span> · WAR ROOM</h1>
   <div class="hud-r">
-    <div class="pill"><div class="dot g"></div>2 AGENTES ACTIVOS</div>
+    <div class="pill"><div class="dot g"></div>4 AGENTES ACTIVOS</div>
     <div class="pill" id="clock">--:--:--</div>
   </div>
 </div>
@@ -105,10 +105,10 @@ function layoutNodes(){
 }
 layoutNodes();addEventListener('resize',layoutNodes);
 
-// ── AGENT CHARACTERS (walking people) ──
-function createAgent(id,name,color,startX){
+// ── AGENT CHARACTERS (walking AIs) ──
+function createAgent(id,name,rank,color,startX){
   return{
-    id,name,color,
+    id,name,rank,color,
     x:startX,y:H/2,
     tx:startX,ty:H/2,
     targetNode:-1,
@@ -125,8 +125,10 @@ function createAgent(id,name,color,startX){
   };
 }
 const agents=[
-  createAgent('pc','PC Principal','#00b4d8',W/2-60),
-  createAgent('lt','Portátil','#e63946',W/2+60),
+  createAgent('gemini','Gemini 3.1','[Arquitecto]','#00b4d8',W/2-80),
+  createAgent('claude1','Claude 3.5','[Comandante]','#e63946',W/2-20),
+  createAgent('claude2','Claude Code','[Operativo]','#9d4edd',W/2+40),
+  createAgent('deepseek','DeepSeek R1','[Auditor]','#00f5a0',W/2+100)
 ];
 
 // ── DRAW WALKING PERSON ──
@@ -227,6 +229,8 @@ function drawPerson(a){
   // NAME TAG
   c.font='bold 9px "JetBrains Mono"';c.textAlign='center';c.fillStyle=a.color;
   c.fillText(a.name,a.x,a.y+34);
+  c.font='600 7px "JetBrains Mono"';c.fillStyle=a.color+'aa';
+  c.fillText(a.rank,a.x,a.y+44);
 
   // SPEECH BUBBLE
   if(a.bubbleTimer>0&&a.bubbleText){
