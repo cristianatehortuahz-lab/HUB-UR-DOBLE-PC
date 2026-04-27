@@ -37,25 +37,21 @@
         <#include "menu.ftl">
         
         <div id="intro-container">
-        <section id="intro" role="region" class="container">
-            <section id="search-home" role="region">
-                <fieldset>
-                    <legend class="sr-only">${i18n().search_form}</legend>
+            <section id="intro" role="region">
+                <div id="search-home">
                     <form id="search-homepage" action="${urls.search}" name="search-home" role="search" method="GET">
-                        <input class="form-control" type="search" placeholder="Busque un investigador, unidad o laboratorio" aria-label="Buscar en el sitio" id="searchInput" name="querytext" autocapitalize="off">
+                        <input type="search" placeholder="Busque un investigador, unidad o publicación..." aria-label="Buscar en el sitio" id="searchInput" name="querytext" autocapitalize="off" required>
                         <input type="hidden" name="filters_category" value="" autocapitalize="off">
                         <button class="search-button" type="submit" aria-label="${i18n().search_button}">
-                            <!-- Icono de Lupa SVG -->
                             <svg class="search-icon" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
                             </svg>
                         </button>
                     </form>
-                </fieldset>
-                <p>${i18n().intro_para3}</p>
-            </section> <!-- #search-home -->
-        </section> <!-- #intro -->
-    </div>
+                    <p>Descubra la red de conocimiento e investigación de la Universidad del Rosario</p>
+                </div>
+            </section>
+        </div>
 
 
         
