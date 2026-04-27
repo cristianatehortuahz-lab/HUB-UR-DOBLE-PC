@@ -291,6 +291,28 @@
     </div>
   </div>
 
+  <!-- COMMANDER PANEL -->
+  <div class="hud" style="bottom: 12px; right: 20px; pointer-events: auto;">
+    <div class="hud-card" style="width: 300px; max-height: none;">
+      <div class="hud-title"><i></i>CENTRO DE MANDO</div>
+      
+      <div style="font-size: 10px; margin-bottom: 8px; color: var(--dim);">Asigna misiones. Se publicarán en ORDERS.md vía Git.</div>
+      
+      <select id="cmd-agent" style="width: 100%; padding: 6px; margin-bottom: 8px; background: rgba(0,0,0,0.5); border: 1px solid var(--bd); color: var(--txt); border-radius: 4px; font-family: var(--mono); font-size: 10px; outline: none;">
+        <option value="">-- Seleccionar Agente --</option>
+        <option value="Claude35">Claude 3.5 (Comandante UI/UX)</option>
+        <option value="Gemini">Gemini (Arquitecto)</option>
+        <option value="DeepSeek">DeepSeek (Auditor)</option>
+        <option value="ClaudeCode">Claude Code (Operativo)</option>
+      </select>
+      
+      <textarea id="cmd-task" placeholder="Ej: Ajusta el padding del footer..." style="width: 100%; height: 50px; padding: 6px; margin-bottom: 8px; background: rgba(0,0,0,0.5); border: 1px solid var(--bd); color: var(--txt); border-radius: 4px; font-family: var(--sans); font-size: 11px; resize: none; outline: none;"></textarea>
+      
+      <button id="cmd-send" style="width: 100%; padding: 8px; background: var(--red); color: white; border: none; border-radius: 4px; font-weight: bold; cursor: pointer; font-family: var(--mono); font-size: 11px; transition: 0.2s;">ENVIAR ORDEN</button>
+      <div id="cmd-status" style="font-size: 9px; margin-top: 6px; text-align: center; color: var(--grn); display: none;">✓ Orden enviada y pusheada</div>
+    </div>
+  </div>
+
   <script>
     const cv = document.getElementById('game'), c = cv.getContext('2d');
     let W, H;
@@ -733,6 +755,51 @@
       } catch (e) { }
     }
     fetchStatus(); setInterval(fetchStatus, 30000);
+
+    // ── COMMANDER PANEL LOGIC ──
+    document.getElementById('cmd-send').addEventListener('click', async () => {
+      const agent = document.getElementById('cmd-agent').value;
+      const task = document.getElementById('cmd-task').value.trim();
+      const statusEl = document.getElementById('cmd-status');
+      const btn = document.getElementById('cmd-send');
+
+      if (!agent || !task) {
+        statusEl.innerText = '⚠️ Selecciona un agente y escribe una tarea';
+        statusEl.style.color = 'var(--amb)';
+        statusEl.style.display = 'block';
+        return;
+      }
+
+      btn.disabled = true;
+      btn.style.opacity = '0.5';
+      statusEl.innerText = 'Enviando orden a Git...';
+      statusEl.style.color = 'var(--blu)';
+      statusEl.style.display = 'block';
+
+      try {
+        const res = await fetch('http://localhost:3001/api/order', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ agent, task })
+        });
+
+        if (res.ok) {
+          statusEl.innerText = '✓ Orden enviada y pusheada a ORDERS.md';
+          statusEl.style.color = 'var(--grn)';
+          document.getElementById('cmd-task').value = '';
+          // Opcional: Refrescar el COMMS si también mostramos ORDERS ahí
+        } else {
+          throw new Error('Server returned error');
+        }
+      } catch (err) {
+        statusEl.innerText = '❌ Error: ¿Está commander_api.py corriendo en el puerto 3001?';
+        statusEl.style.color = 'var(--red)';
+      } finally {
+        btn.disabled = false;
+        btn.style.opacity = '1';
+        setTimeout(() => { if (statusEl.style.color !== 'var(--red)') statusEl.style.display = 'none'; }, 5000);
+      }
+    });
 
   </script>
 </body>
