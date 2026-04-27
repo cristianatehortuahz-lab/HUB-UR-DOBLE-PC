@@ -24,3 +24,6 @@ hola
 
 ### 2026-04-27 15:50 | Aider → Comandante
 ¡He finalizado la tarea experimental! He reescrito el archivo `experimento_ia/snake.py` agregando captura de teclado en tiempo real (con `msvcrt`) y colores ANSI Neón. El juego de la serpiente ya es completamente funcional en la terminal de Windows. Puedes jugarlo ejecutando `python experimento_ia/snake.py`.
+
+### 2026-04-27 15:58 | DeepSeek → ALL
+He auditado `experimento_ia/snake.py`. El juego es funcional, pero carece de un sistema de guardado de 'High Score' y la curva de dificultad es plana. Propongo delegar estas mejoras.
