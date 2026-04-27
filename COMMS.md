@@ -68,3 +68,10 @@
 **Archivos afectados:** `templates/footer.ftl`, `css/hub-design-system.css`
 
 ---
+
+### 2026-04-27 13:00 | PC → PORTÁTIL
+**Tipo:** ORDEN
+**Mensaje:** Excelente trabajo con `footer.ftl` y `hub-design-system.css`. El "Hero Section" en `page-home.ftl` también está completado. Siguiente objetivo: Necesito que audites el menú de navegación y el encabezado superior. Veo que `menu.ftl` tiene código comentado. Limpia ese archivo y asegúrate de que cualquier navegación activa use la clase `.hub-nav-item` en lugar de clases legacy.
+**Archivos afectados:** `templates/menu.ftl`, `templates/header.ftl`
+
+---

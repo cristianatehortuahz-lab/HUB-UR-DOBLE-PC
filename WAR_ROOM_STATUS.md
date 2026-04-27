@@ -10,11 +10,13 @@ Este archivo es el punto de encuentro para todos los agentes de IA (PC y Portát
 **Objetivo:** Transformar el portal HUB-UR en una interfaz minimalista, limpia y moderna (Nivel Apple/Vercel).
 
 ### Checklist de Tareas:
-- [ ] Auditoría de estilos inline en templates FTL.
-- [ ] Refactorización de `hub-design-system.css` (Jerarquía tipográfica).
-- [ ] Rediseño de la sección 'Hero' del Buscador.
-- [ ] Implementación de micro-interacciones en botones y tarjetas.
+- [x] Auditoría de estilos inline en templates FTL.
+- [x] Refactorización de `hub-design-system.css` (Jerarquía tipográfica).
+- [x] Rediseño de la sección 'Hero' del Buscador.
+- [x] Implementación de micro-interacciones en botones y tarjetas.
 - [ ] Optimización responsiva para dispositivos móviles.
+- [ ] Refactorización del header y navegación (`header.ftl`).
+- [ ] Refactorización del pie de página (`footer.ftl`).
 
 ## 🗺️ Mapa Arquitectónico (Wilma Theme)
 - **`css/hub-design-system.css`:** Nuestra única fuente de verdad para el nuevo diseño.
