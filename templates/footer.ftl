@@ -78,7 +78,7 @@
     <div class="footer-line-3 text-center">
         <div class="container-fluid">
             <p>&copy;${copyright.year?c} ${copyright.text} | Powered by <a href="http://vivoweb.org" target="_blank"><strong>VIVO</strong></a></p>
-            <p style="font-size: 0.75rem; opacity: 0.7;">
+            <p class="footer-legal-text">
                 Instituci&oacute;n de educaci&oacute;n superior sujeta a la inspecci&oacute;n y vigilancia del Mineducaci&oacute;n | 
                 Resoluci&oacute;n 58 del 16 de septiembre de 1895 expedida por el Ministerio de Gobierno.
             </p>

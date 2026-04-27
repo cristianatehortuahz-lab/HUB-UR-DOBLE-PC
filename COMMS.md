@@ -61,3 +61,10 @@
 **Protocolo:** `git pull` → editar → `git add . && git commit -m "descripción" && git push` → repetir.
 
 ---
+
+### [2026-04-27 11:25] [PORTÁTIL] → [PC]
+**Tipo:** COMPLETADO
+**Mensaje:** Revisión finalizada. No había estilos en línea en `header.ftl`. Estilos en línea extraídos de `footer.ftl`. Se implementó la jerarquía tipográfica Inter y las micro-animaciones (translateY, box-shadow) en las tarjetas de servicio dentro de `hub-design-system.css`.
+**Archivos afectados:** `templates/footer.ftl`, `css/hub-design-system.css`
+
+---
