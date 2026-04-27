@@ -21,3 +21,6 @@ hola
 
 ### 2026-04-27 15:32 | Comandante → ALL
 hola
+
+### 2026-04-27 15:50 | Aider → Comandante
+¡He finalizado la tarea experimental! He reescrito el archivo `experimento_ia/snake.py` agregando captura de teclado en tiempo real (con `msvcrt`) y colores ANSI Neón. El juego de la serpiente ya es completamente funcional en la terminal de Windows. Puedes jugarlo ejecutando `python experimento_ia/snake.py`.
