@@ -253,7 +253,7 @@
           0% PROGRESO</div>
       </div>
       <div class="pill">
-        <div class="dot g"></div>2 AGENTES DE IA
+        <div class="dot g"></div>4 AGENTES ACTIVOS
       </div>
       <div class="pill" id="clock">--:--:--</div>
     </div>
@@ -324,9 +324,9 @@
     layoutNodes(); addEventListener('resize', layoutNodes);
 
     // ── AGENT CHARACTERS (walking people) ──
-    function createAgent(id, name, color, startX) {
+    function createAgent(id, name, rank, color, startX) {
       return {
-        id, name, color,
+        id, name, rank, color,
         x: startX, y: H / 2,
         tx: startX, ty: H / 2,
         targetNode: -1,
@@ -343,8 +343,10 @@
       };
     }
     const agents = [
-      createAgent('Antigravity', 'Antigravity [IA]', '#e63946', W / 2 - 60),
-      createAgent('PC', 'Main AI / CPU', '#00b4d8', W / 2 + 60),
+      createAgent('Gemini', 'Gemini 3.1 Pro', 'Arquitecto', '#3b82f6', W / 2 - 120),
+      createAgent('Claude35', 'Claude 3.5', 'Comandante', '#ef4444', W / 2 - 40),
+      createAgent('ClaudeCode', 'Claude Code', 'Operativo', '#8b5cf6', W / 2 + 40),
+      createAgent('DeepSeek', 'DeepSeek R1', 'Auditor', '#10b981', W / 2 + 120)
     ];
 
     // ── DRAW WALKING PERSON ──
@@ -445,6 +447,8 @@
       // NAME TAG
       c.font = 'bold 9px "JetBrains Mono"'; c.textAlign = 'center'; c.fillStyle = a.color;
       c.fillText(a.name, a.x, a.y + 34);
+      c.font = '600 7px "JetBrains Mono"'; c.fillStyle = a.color + 'aa';
+      c.fillText(a.rank, a.x, a.y + 44);
 
       // SPEECH BUBBLE
       if (a.bubbleTimer > 0 && a.bubbleText) {
