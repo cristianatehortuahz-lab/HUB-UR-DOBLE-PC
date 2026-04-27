@@ -566,25 +566,7 @@
         }
       }
 
-      // 2. SI NO TIENE TAREA, LOS AGENTES AUDITORES (DeepSeek/ClaudeCode) REVISAN NODOS ALEATORIAMENTE
-      if (myTasks.length === 0 && (a.id === 'DeepSeek' || a.id === 'ClaudeCode')) {
-         if (Math.random() < 0.005 && a.state === 'idle') {
-             a.targetNode = Math.floor(Math.random() * nodes.length);
-             a.tx = nodes[a.targetNode].x; a.ty = nodes[a.targetNode].y - 30;
-             a.state = 'moving'; a.bubbleText = '🔍 Auditando...'; a.bubbleTimer = 200;
-             a.workTimer = 0;
-         }
-         if (a.targetNode >= 0 && a.state !== 'returning') {
-             const dx = a.tx - a.x, dy = a.ty - a.y, dist = Math.hypot(dx, dy);
-             if (dist < 4) {
-               a.state = 'working'; a.bubbleText = '✅ Auditado'; a.bubbleTimer = 100;
-               if (a.workTimer++ > 150) { a.targetNode = -1; a.state = 'returning'; } // Termina de auditar
-             } else {
-               a.x += dx / dist * a.speed; a.y += dy / dist * a.speed;
-             }
-             return;
-         }
-      }
+
 
       // 3. RETORNAR A LA BASE SI ESTÁ OCIOSO
       a.targetNode = -1;
