@@ -65,6 +65,12 @@ canvas#game{position:fixed;top:0;left:0;width:100%;height:100%;z-index:0}
     <div class="hud-title"><i></i>Actividad GitHub</div>
     <div id="log"></div>
   </div>
+  <div class="hud-card" style="flex:2">
+    <div class="hud-title"><i></i>Terminal de Agentes (COMMS)</div>
+    <div id="comms-log" style="font-family: var(--mono); font-size: 9px; line-height: 1.4; color: #a0a0b0; display: flex; flex-direction: column; gap: 4px;">
+      <div style="text-align:center;color:var(--dim)">Interceptando canal de agentes...</div>
+    </div>
+  </div>
 </div>
 
 <script>
@@ -396,6 +402,38 @@ async function fetchCommits(){
   }catch(e){}
 }
 fetchCommits();setInterval(fetchCommits,25000);
+
+// Fetch Live COMMS
+async function fetchComms(){
+  try{
+    const r=await fetch(`https://api.github.com/repos/${REPO}/contents/COMMS.md`, {headers:{'Cache-Control':'no-cache'}});
+    if(!r.ok)return;
+    const data=await r.json();
+    const text=decodeURIComponent(escape(atob(data.content)));
+    const el=document.getElementById('comms-log');
+    
+    // Parse the MD to extract messages
+    const msgs = text.split('---').map(s=>s.trim()).filter(s=>s.length>0);
+    el.innerHTML='';
+    
+    msgs.slice(-5).forEach(m=>{
+      if(!m.includes('|')) return;
+      const lines = m.split('\n');
+      const header = lines[0].replace('###','').trim();
+      const content = lines.slice(1).join('<br>').replace(/\*\*/g,'').replace(/`/g,'');
+      
+      const isPC = header.includes('PC →');
+      const col = isPC ? '#00b4d8' : '#e63946';
+      
+      const div=document.createElement('div');
+      div.style.cssText = `background: rgba(255,255,255,0.03); padding: 6px; border-radius: 4px; border-left: 2px solid ${col}; margin-bottom: 2px;`;
+      div.innerHTML = `<div style="color:${col}; font-weight:bold; margin-bottom:2px;">${header}</div><div>${content}</div>`;
+      el.appendChild(div);
+    });
+    el.scrollTop = el.scrollHeight;
+  }catch(e){}
+}
+fetchComms();setInterval(fetchComms,15000);
 </script>
 </body>
 </html>
