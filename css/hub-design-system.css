@@ -128,6 +128,144 @@ body {
   box-shadow: 0 2px 12px rgba(0, 0, 0, 0.15) !important;
 }
 
+/* ── 2.5 HERO SECTION — BUSCADOR PRINCIPAL ──────────────── */
+#intro-container {
+  background: linear-gradient(160deg, #1a0a0e 0%, #da0921 40%, #b8071b 60%, #8a0514 100%);
+  padding: 120px 24px 100px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  position: relative;
+  overflow: hidden;
+}
+
+/* Subtle dot pattern overlay */
+#intro-container::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background-image: radial-gradient(rgba(255,255,255,0.06) 1px, transparent 1px);
+  background-size: 24px 24px;
+  pointer-events: none;
+}
+
+/* Soft glow behind the search */
+#intro-container::after {
+  content: '';
+  position: absolute;
+  width: 500px;
+  height: 500px;
+  background: radial-gradient(circle, rgba(255,255,255,0.08) 0%, transparent 70%);
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  pointer-events: none;
+}
+
+#intro-container #intro {
+  position: relative;
+  z-index: 2;
+  max-width: 680px;
+  width: 100%;
+}
+
+#intro-container #search-home {
+  width: 100%;
+}
+
+#intro-container #search-home fieldset {
+  border: none;
+  padding: 0;
+  margin: 0;
+}
+
+#intro-container #search-home p {
+  color: rgba(255, 255, 255, 0.7);
+  font-size: 0.9rem;
+  font-weight: 300;
+  margin-top: 16px;
+  letter-spacing: 0.3px;
+}
+
+/* Search form — pill shape */
+#intro-container #search-homepage {
+  display: flex;
+  align-items: center;
+  background: rgba(255, 255, 255, 0.12);
+  backdrop-filter: blur(12px);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: 60px;
+  padding: 6px 6px 6px 28px;
+  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
+}
+
+#intro-container #search-homepage:focus-within {
+  background: rgba(255, 255, 255, 0.18);
+  border-color: rgba(255, 255, 255, 0.4);
+  box-shadow: 0 12px 48px rgba(0, 0, 0, 0.3);
+  transform: scale(1.02);
+}
+
+#intro-container #search-homepage input[type="search"] {
+  flex: 1;
+  background: transparent !important;
+  border: none !important;
+  outline: none !important;
+  box-shadow: none !important;
+  color: #fff !important;
+  font-family: 'Inter', sans-serif;
+  font-size: 1rem;
+  font-weight: 400;
+  padding: 12px 0;
+}
+
+#intro-container #search-homepage input[type="search"]::placeholder {
+  color: rgba(255, 255, 255, 0.55);
+  font-weight: 300;
+}
+
+#intro-container #search-homepage .search-button {
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  border: none;
+  background: #fff;
+  color: var(--hub-red);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.3s ease;
+  flex-shrink: 0;
+}
+
+#intro-container #search-homepage .search-button:hover {
+  background: var(--hub-navy);
+  color: #fff;
+  transform: scale(1.1);
+}
+
+#intro-container #search-homepage .search-icon {
+  width: 20px;
+  height: 20px;
+}
+
+/* Responsive hero */
+@media (max-width: 768px) {
+  #intro-container {
+    padding: 80px 16px 60px;
+  }
+  #intro-container #search-homepage {
+    padding: 4px 4px 4px 20px;
+  }
+  #intro-container #search-homepage .search-button {
+    width: 40px;
+    height: 40px;
+  }
+}
+
 /* ── 3. SERVICES SECTION ────────────────────────────────── */
 .services-panel {
   background: var(--hub-bg) !important;
