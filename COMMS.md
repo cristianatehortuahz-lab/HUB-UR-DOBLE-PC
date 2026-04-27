@@ -67,6 +67,11 @@
 **Mensaje:** Revisión finalizada. No había estilos en línea en `header.ftl`. Estilos en línea extraídos de `footer.ftl`. Se implementó la jerarquía tipográfica Inter y las micro-animaciones (translateY, box-shadow) en las tarjetas de servicio dentro de `hub-design-system.css`.
 **Archivos afectados:** `templates/footer.ftl`, `css/hub-design-system.css`
 
+### [2026-04-27 12:55] [PORTÁTIL/ANTIGRAVITY] → [PC]
+**Tipo:** COMPLETADO
+**Mensaje:** Optimización responsiva "Mobile First" integrada 100% en `hub-design-system.css`. Hero Search y Services grid ahora soportan layouts verticales en max-width: 768px. Adicionalmente, el dashboard `war_room.html` fue refactorizado para mostrar **actividad real de la IA local** y el progreso global mediante GitHub API, separando el hardware (PC/Laptop) de los agentes de IA (Antigravity/Claude).
+**Archivos afectados:** `css/hub-design-system.css`, `war_room.html`
+
 ---
 
 ### 2026-04-27 13:00 | PC → PORTÁTIL

@@ -1,443 +1,688 @@
 <!DOCTYPE html>
 <html lang="es">
+
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width,initial-scale=1">
-<title>⚔️ HUB-UR | Digital War Room</title>
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700;900&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
-<style>
-*{margin:0;padding:0;box-sizing:border-box}
-:root{--bg:#060610;--s1:#0c0c1a;--s2:#141428;--bd:#1e1e3a;--red:#e63946;--grn:#00f5a0;--amb:#ffd700;--blu:#00b4d8;--txt:#e0e0f0;--dim:#6a6a8a;--mono:'JetBrains Mono',monospace;--sans:'Inter',sans-serif}
-body{background:var(--bg);color:var(--txt);font-family:var(--sans);overflow:hidden;height:100vh}
-canvas#game{position:fixed;top:0;left:0;width:100%;height:100%;z-index:0}
-.hud{position:fixed;z-index:10;pointer-events:none}
-.hud-top{top:0;left:0;right:0;display:flex;align-items:center;justify-content:space-between;padding:12px 20px;background:linear-gradient(180deg,rgba(6,6,16,.95),transparent)}
-.hud-top h1{font:700 14px var(--sans);letter-spacing:3px;text-transform:uppercase;pointer-events:auto}
-.hud-top h1 span{color:var(--red);text-shadow:0 0 20px rgba(230,57,70,.4)}
-.hud-r{display:flex;gap:10px;align-items:center}
-.pill{display:flex;align-items:center;gap:5px;background:rgba(20,20,40,.8);border:1px solid var(--bd);padding:5px 12px;border-radius:14px;font:600 10px var(--mono);backdrop-filter:blur(8px);pointer-events:auto}
-.dot{width:6px;height:6px;border-radius:50%;animation:blink 2s infinite}
-.dot.g{background:var(--grn);box-shadow:0 0 6px var(--grn)}
-@keyframes blink{0%,100%{opacity:1}50%{opacity:.3}}
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>⚔️ HUB-UR | Digital War Room</title>
+  <link
+    href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700;900&family=JetBrains+Mono:wght@400;600&display=swap"
+    rel="stylesheet">
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box
+    }
 
-/* Bottom HUD - Tasks & Log */
-.hud-bottom{bottom:0;left:0;right:0;display:flex;gap:12px;padding:12px 20px;background:linear-gradient(0deg,rgba(6,6,16,.95),transparent);pointer-events:auto}
-.hud-card{background:rgba(12,12,26,.85);border:1px solid var(--bd);border-radius:10px;padding:12px;backdrop-filter:blur(8px);flex:1;max-height:180px;overflow-y:auto}
-.hud-title{font:600 9px var(--mono);text-transform:uppercase;letter-spacing:2px;color:var(--dim);margin-bottom:8px;display:flex;align-items:center;gap:5px}
-.hud-title i{width:3px;height:8px;background:var(--red);border-radius:1px}
+    :root {
+      --bg: #060610;
+      --s1: #0c0c1a;
+      --s2: #141428;
+      --bd: #1e1e3a;
+      --red: #e63946;
+      --grn: #00f5a0;
+      --amb: #ffd700;
+      --blu: #00b4d8;
+      --txt: #e0e0f0;
+      --dim: #6a6a8a;
+      --mono: 'JetBrains Mono', monospace;
+      --sans: 'Inter', sans-serif
+    }
 
-.task{display:flex;align-items:center;gap:6px;padding:5px 8px;border-radius:5px;margin-bottom:3px;font-size:10px;background:rgba(255,255,255,.02)}
-.chk{width:14px;height:14px;border-radius:3px;border:1.5px solid var(--bd);display:flex;align-items:center;justify-content:center;font-size:7px;flex-shrink:0}
-.chk.d{background:var(--grn);border-color:var(--grn);color:#000}
-.chk.p{background:var(--amb);border-color:var(--amb);color:#000}
+    body {
+      background: var(--bg);
+      color: var(--txt);
+      font-family: var(--sans);
+      overflow: hidden;
+      height: 100vh
+    }
 
-.le{padding:4px 0;border-bottom:1px solid rgba(30,30,58,.3);font-size:9px;display:flex;gap:5px}
-.le:last-child{border:none}
-.le .h{font:600 9px var(--mono);color:var(--red);min-width:45px}
-.le .m{flex:1;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.le .t{font:400 8px var(--mono);color:var(--dim)}
+    canvas#game {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      z-index: 0
+    }
 
-::-webkit-scrollbar{width:2px}::-webkit-scrollbar-thumb{background:var(--bd);border-radius:1px}
-</style>
+    .hud {
+      position: fixed;
+      z-index: 10;
+      pointer-events: none
+    }
+
+    .hud-top {
+      top: 0;
+      left: 0;
+      right: 0;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 12px 20px;
+      background: linear-gradient(180deg, rgba(6, 6, 16, .95), transparent)
+    }
+
+    .hud-top h1 {
+      font: 700 14px var(--sans);
+      letter-spacing: 3px;
+      text-transform: uppercase;
+      pointer-events: auto
+    }
+
+    .hud-top h1 span {
+      color: var(--red);
+      text-shadow: 0 0 20px rgba(230, 57, 70, .4)
+    }
+
+    .hud-r {
+      display: flex;
+      gap: 10px;
+      align-items: center
+    }
+
+    .pill {
+      display: flex;
+      align-items: center;
+      gap: 5px;
+      background: rgba(20, 20, 40, .8);
+      border: 1px solid var(--bd);
+      padding: 5px 12px;
+      border-radius: 14px;
+      font: 600 10px var(--mono);
+      backdrop-filter: blur(8px);
+      pointer-events: auto
+    }
+
+    .dot {
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      animation: blink 2s infinite
+    }
+
+    .dot.g {
+      background: var(--grn);
+      box-shadow: 0 0 6px var(--grn)
+    }
+
+    @keyframes blink {
+
+      0%,
+      100% {
+        opacity: 1
+      }
+
+      50% {
+        opacity: .3
+      }
+    }
+
+    /* Bottom HUD - Tasks & Log */
+    .hud-bottom {
+      bottom: 0;
+      left: 0;
+      right: 0;
+      display: flex;
+      gap: 12px;
+      padding: 12px 20px;
+      background: linear-gradient(0deg, rgba(6, 6, 16, .95), transparent);
+      pointer-events: auto
+    }
+
+    .hud-card {
+      background: rgba(12, 12, 26, .85);
+      border: 1px solid var(--bd);
+      border-radius: 10px;
+      padding: 12px;
+      backdrop-filter: blur(8px);
+      flex: 1;
+      max-height: 180px;
+      overflow-y: auto
+    }
+
+    .hud-title {
+      font: 600 9px var(--mono);
+      text-transform: uppercase;
+      letter-spacing: 2px;
+      color: var(--dim);
+      margin-bottom: 8px;
+      display: flex;
+      align-items: center;
+      gap: 5px
+    }
+
+    .hud-title i {
+      width: 3px;
+      height: 8px;
+      background: var(--red);
+      border-radius: 1px
+    }
+
+    .task {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      padding: 5px 8px;
+      border-radius: 5px;
+      margin-bottom: 3px;
+      font-size: 10px;
+      background: rgba(255, 255, 255, .02)
+    }
+
+    .chk {
+      width: 14px;
+      height: 14px;
+      border-radius: 3px;
+      border: 1.5px solid var(--bd);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 7px;
+      flex-shrink: 0
+    }
+
+    .chk.d {
+      background: var(--grn);
+      border-color: var(--grn);
+      color: #000
+    }
+
+    .chk.p {
+      background: var(--amb);
+      border-color: var(--amb);
+      color: #000
+    }
+
+    .le {
+      padding: 4px 0;
+      border-bottom: 1px solid rgba(30, 30, 58, .3);
+      font-size: 9px;
+      display: flex;
+      gap: 5px
+    }
+
+    .le:last-child {
+      border: none
+    }
+
+    .le .h {
+      font: 600 9px var(--mono);
+      color: var(--red);
+      min-width: 45px
+    }
+
+    .le .m {
+      flex: 1;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis
+    }
+
+    .le .t {
+      font: 400 8px var(--mono);
+      color: var(--dim)
+    }
+
+    ::-webkit-scrollbar {
+      width: 2px
+    }
+
+    ::-webkit-scrollbar-thumb {
+      background: var(--bd);
+      border-radius: 1px
+    }
+  </style>
 </head>
+
 <body>
-<canvas id="game"></canvas>
+  <canvas id="game"></canvas>
 
-<!-- HUD overlay -->
-<div class="hud hud-top">
-  <h1>⚔️ HUB-<span>UR</span> · WAR ROOM</h1>
-  <div class="hud-r">
-    <div class="pill"><div class="dot g"></div>4 AGENTES ACTIVOS</div>
-    <div class="pill" id="clock">--:--:--</div>
-  </div>
-</div>
-
-<div class="hud hud-bottom">
-  <div class="hud-card">
-    <div class="hud-title"><i></i>Misión: Executive Minimalism</div>
-    <div class="task"><div class="chk p">⟳</div><span>Auditoría estilos inline</span></div>
-    <div class="task"><div class="chk p">⟳</div><span>Hero Section Buscador</span></div>
-    <div class="task"><div class="chk"></div><span>Jerarquía tipográfica</span></div>
-    <div class="task"><div class="chk"></div><span>Micro-animaciones</span></div>
-    <div class="task"><div class="chk"></div><span>Responsivo 100%</span></div>
-  </div>
-  <div class="hud-card" style="flex:1.5">
-    <div class="hud-title"><i></i>Actividad GitHub</div>
-    <div id="log"></div>
-  </div>
-  <div class="hud-card" style="flex:2">
-    <div class="hud-title"><i></i>Terminal de Agentes (COMMS)</div>
-    <div id="comms-log" style="font-family: var(--mono); font-size: 9px; line-height: 1.4; color: #a0a0b0; display: flex; flex-direction: column; gap: 4px;">
-      <div style="text-align:center;color:var(--dim)">Interceptando canal de agentes...</div>
+  <!-- HUD overlay -->
+  <div class="hud hud-top">
+    <h1>⚔️ HUB-<span>UR</span> · WAR ROOM</h1>
+    <div class="hud-r">
+      <div
+        style="width: 150px; background: rgba(0,0,0,0.5); border: 1px solid var(--bd); height: 16px; border-radius: 8px; overflow: hidden; position: relative; pointer-events:auto; display:flex;">
+        <div id="global-progress"
+          style="width: 0%; height: 100%; background: linear-gradient(90deg, var(--blu), var(--grn)); transition: width 1s;">
+        </div>
+        <div id="global-progress-txt"
+          style="position: absolute; width: 100%; top: 0; left: 0; text-align: center; font-size: 10px; line-height: 16px; font-weight: bold; font-family: var(--mono); text-shadow: 1px 1px 2px #000;">
+          0% PROGRESO</div>
+      </div>
+      <div class="pill">
+        <div class="dot g"></div>2 AGENTES DE IA
+      </div>
+      <div class="pill" id="clock">--:--:--</div>
     </div>
   </div>
-</div>
 
-<script>
-const cv=document.getElementById('game'),c=cv.getContext('2d');
-let W,H;
-function resize(){W=cv.width=innerWidth;H=cv.height=innerHeight}
-resize();addEventListener('resize',resize);
+  <div class="hud hud-bottom">
+    <div class="hud-card">
+      <div class="hud-title"><i></i>Misión: Executive Minimalism</div>
+      <div class="task">
+        <div class="chk p">⟳</div><span>Auditoría estilos inline</span>
+      </div>
+      <div class="task">
+        <div class="chk p">⟳</div><span>Hero Section Buscador</span>
+      </div>
+      <div class="task">
+        <div class="chk"></div><span>Jerarquía tipográfica</span>
+      </div>
+      <div class="task">
+        <div class="chk"></div><span>Micro-animaciones</span>
+      </div>
+      <div class="task">
+        <div class="chk"></div><span>Responsivo 100%</span>
+      </div>
+    </div>
+    <div class="hud-card" style="flex:1.5">
+      <div class="hud-title"><i></i>Actividad GitHub</div>
+      <div id="log"></div>
+    </div>
+    <div class="hud-card" style="flex:2">
+      <div class="hud-title"><i></i>Terminal de Agentes (COMMS)</div>
+      <div id="comms-log"
+        style="font-family: var(--mono); font-size: 9px; line-height: 1.4; color: #a0a0b0; display: flex; flex-direction: column; gap: 4px;">
+        <div style="text-align:center;color:var(--dim)">Interceptando canal de agentes...</div>
+      </div>
+    </div>
+  </div>
 
-// ── FILE NODES ──
-const fileData=[
-  {name:'hub-design-system.css',icon:'🎨',status:'done'},
-  {name:'header.ftl',icon:'📄',status:'wip'},
-  {name:'footer.ftl',icon:'📄',status:'wip'},
-  {name:'page-home.ftl',icon:'🏠',status:'wip'},
-  {name:'UR-service-box.ftl',icon:'📦',status:'done'},
-  {name:'lib-home-page.ftl',icon:'📊',status:'pending'},
-  {name:'dynamic-filters.js',icon:'⚡',status:'pending'},
-  {name:'network_logic.js',icon:'🌐',status:'pending'},
-  {name:'screen.css',icon:'🔒',status:'locked'},
-  {name:'head.ftl',icon:'📄',status:'pending'},
-  {name:'COMMS.md',icon:'📡',status:'done'},
-  {name:'WAR_ROOM.md',icon:'📋',status:'done'},
-];
+  <script>
+    const cv = document.getElementById('game'), c = cv.getContext('2d');
+    let W, H;
+    function resize() { W = cv.width = innerWidth; H = cv.height = innerHeight }
+    resize(); addEventListener('resize', resize);
 
-let nodes=[];
-function layoutNodes(){
-  const cx=W/2,cy=H/2,r=Math.min(W,H)*0.3;
-  nodes=fileData.map((f,i)=>{
-    const a=(i/fileData.length)*Math.PI*2-Math.PI/2;
-    return{...f,x:cx+Math.cos(a)*r,y:cy+Math.sin(a)*r,nodeR:24};
-  });
-}
-layoutNodes();addEventListener('resize',layoutNodes);
+    // ── FILE NODES ──
+    const fileData = [
+      { name: 'hub-design-system.css', icon: '🎨', status: 'done' },
+      { name: 'header.ftl', icon: '📄', status: 'wip' },
+      { name: 'footer.ftl', icon: '📄', status: 'wip' },
+      { name: 'page-home.ftl', icon: '🏠', status: 'wip' },
+      { name: 'UR-service-box.ftl', icon: '📦', status: 'done' },
+      { name: 'lib-home-page.ftl', icon: '📊', status: 'pending' },
+      { name: 'dynamic-filters.js', icon: '⚡', status: 'pending' },
+      { name: 'network_logic.js', icon: '🌐', status: 'pending' },
+      { name: 'screen.css', icon: '🔒', status: 'locked' },
+      { name: 'head.ftl', icon: '📄', status: 'pending' },
+      { name: 'COMMS.md', icon: '📡', status: 'done' },
+      { name: 'WAR_ROOM.md', icon: '📋', status: 'done' },
+    ];
 
-// ── AGENT CHARACTERS (walking AIs) ──
-function createAgent(id,name,rank,color,startX){
-  return{
-    id,name,rank,color,
-    x:startX,y:H/2,
-    tx:startX,ty:H/2,
-    targetNode:-1,
-    state:'idle',
-    // Walking animation
-    walkFrame:0,walkDir:1,
-    // Body parts
-    headBob:0,armSwing:0,legSwing:0,
-    // Trail & effects
-    trail:[],sparkles:[],
-    bubbleText:'',bubbleTimer:0,
-    workTimer:0,cooldown:0,
-    speed:1.2+Math.random()*0.4,
-  };
-}
-const agents=[
-  createAgent('gemini','Gemini 3.1','[Arquitecto]','#00b4d8',W/2-80),
-  createAgent('claude1','Claude 3.5','[Comandante]','#e63946',W/2-20),
-  createAgent('claude2','Claude Code','[Operativo]','#9d4edd',W/2+40),
-  createAgent('deepseek','DeepSeek R1','[Auditor]','#00f5a0',W/2+100)
-];
-
-// ── DRAW WALKING PERSON ──
-function drawPerson(a){
-  const s=1; // scale
-  const walking=a.state==='moving'||a.state==='returning';
-  
-  // Update animation
-  if(walking){
-    a.walkFrame+=0.12;
-    a.armSwing=Math.sin(a.walkFrame*2)*25;
-    a.legSwing=Math.sin(a.walkFrame*2)*30;
-    a.headBob=Math.abs(Math.sin(a.walkFrame*2))*2;
-  }else if(a.state==='working'){
-    a.walkFrame+=0.08;
-    a.armSwing=Math.sin(a.walkFrame*3)*15;
-    a.legSwing=0;
-    a.headBob=Math.sin(a.walkFrame*4)*1.5;
-  }else{
-    a.armSwing*=0.9;a.legSwing*=0.9;a.headBob*=0.9;
-  }
-
-  c.save();
-  c.translate(a.x,a.y);
-
-  // Shadow
-  c.beginPath();c.ellipse(0,22,12,4,0,0,Math.PI*2);
-  c.fillStyle='rgba(0,0,0,.3)';c.fill();
-
-  // LEFT LEG
-  c.save();c.translate(-4,12);c.rotate(a.legSwing*Math.PI/180);
-  c.fillStyle=a.color+'99';
-  c.fillRect(-2,0,4,12);
-  // Foot
-  c.fillRect(-3,10,6,3);
-  c.restore();
-
-  // RIGHT LEG  
-  c.save();c.translate(4,12);c.rotate(-a.legSwing*Math.PI/180);
-  c.fillStyle=a.color+'99';
-  c.fillRect(-2,0,4,12);
-  c.fillRect(-3,10,6,3);
-  c.restore();
-
-  // BODY
-  c.fillStyle=a.color;
-  c.beginPath();c.roundRect(-8,-8,16,22,4);c.fill();
-  // Body glow
-  c.fillStyle=a.color+'22';
-  c.beginPath();c.roundRect(-10,-10,20,26,5);c.fill();
-
-  // LEFT ARM
-  c.save();c.translate(-9,0);c.rotate(-a.armSwing*Math.PI/180);
-  c.fillStyle=a.color+'bb';
-  c.fillRect(-2,-1,4,14);
-  c.restore();
-
-  // RIGHT ARM
-  c.save();c.translate(9,0);c.rotate(a.armSwing*Math.PI/180);
-  c.fillStyle=a.color+'bb';
-  c.fillRect(-2,-1,4,14);
-  // If working, draw a tiny tool
-  if(a.state==='working'){
-    c.fillStyle='#ffd700';
-    c.fillRect(0,10,2,6);
-    c.fillRect(-2,10,6,2);
-  }
-  c.restore();
-
-  // HEAD
-  c.translate(0,-8+a.headBob);
-  c.beginPath();c.arc(0,-8,8,0,Math.PI*2);
-  c.fillStyle=a.color;c.fill();
-  c.strokeStyle=a.color+'44';c.lineWidth=2;c.stroke();
-
-  // Eyes
-  c.fillStyle='#fff';
-  const blink2=Math.random()>0.995;
-  const eyeH=blink2?1:3;
-  c.fillRect(-4,-10,3,eyeH);
-  c.fillRect(1,-10,3,eyeH);
-  // Pupils
-  if(!blink2){
-    c.fillStyle='#000';
-    const px=a.state==='moving'?(a.tx>a.x?1:-1):0;
-    c.fillRect(-3+px,-9,1.5,1.5);
-    c.fillRect(2+px,-9,1.5,1.5);
-  }
-
-  // Antenna/hat
-  c.strokeStyle=a.color;c.lineWidth=1.5;
-  c.beginPath();c.moveTo(0,-16);c.lineTo(0,-22);c.stroke();
-  c.beginPath();c.arc(0,-23,2.5,0,Math.PI*2);
-  c.fillStyle=a.state==='working'?'#ffd700':'#fff';c.fill();
-
-  c.restore();
-
-  // NAME TAG
-  c.font='bold 9px "JetBrains Mono"';c.textAlign='center';c.fillStyle=a.color;
-  c.fillText(a.name,a.x,a.y+34);
-  c.font='600 7px "JetBrains Mono"';c.fillStyle=a.color+'aa';
-  c.fillText(a.rank,a.x,a.y+44);
-
-  // SPEECH BUBBLE
-  if(a.bubbleTimer>0&&a.bubbleText){
-    const tw=c.measureText(a.bubbleText).width+14;
-    const bx=a.x-tw/2,by=a.y-52;
-    c.fillStyle='rgba(12,12,26,.92)';
-    c.strokeStyle=a.color+'55';c.lineWidth=1;
-    c.beginPath();c.roundRect(bx,by,tw,18,6);c.fill();c.stroke();
-    // Tail
-    c.beginPath();c.moveTo(a.x-4,by+18);c.lineTo(a.x,by+24);c.lineTo(a.x+4,by+18);
-    c.fillStyle='rgba(12,12,26,.92)';c.fill();
-    c.font='500 8px "JetBrains Mono"';c.fillStyle='#e0e0f0';
-    c.fillText(a.bubbleText,a.x,by+12);
-  }
-
-  // TRAIL
-  a.trail.forEach(t=>{
-    t.life-=0.03;
-    if(t.life>0){
-      c.beginPath();c.arc(t.x,t.y+20,2*t.life,0,Math.PI*2);
-      c.fillStyle=a.color+Math.floor(t.life*30).toString(16).padStart(2,'0');
-      c.fill();
+    let nodes = [];
+    function layoutNodes() {
+      const cx = W / 2, cy = H / 2, r = Math.min(W, H) * 0.3;
+      nodes = fileData.map((f, i) => {
+        const a = (i / fileData.length) * Math.PI * 2 - Math.PI / 2;
+        return { ...f, x: cx + Math.cos(a) * r, y: cy + Math.sin(a) * r, nodeR: 24 };
+      });
     }
-  });
-  a.trail=a.trail.filter(t=>t.life>0);
+    layoutNodes(); addEventListener('resize', layoutNodes);
 
-  // SPARKLES
-  a.sparkles.forEach(s=>{
-    s.x+=s.vx;s.y+=s.vy;s.life-=0.02;s.vy+=0.04;
-    if(s.life>0){
-      c.beginPath();
-      c.fillStyle=s.color+Math.floor(s.life*255).toString(16).padStart(2,'0');
-      // Star shape
-      const sz=s.r*s.life;
-      c.fillRect(s.x-sz/2,s.y-0.5,sz,1);
-      c.fillRect(s.x-0.5,s.y-sz/2,1,sz);
+    // ── AGENT CHARACTERS (walking people) ──
+    function createAgent(id, name, color, startX) {
+      return {
+        id, name, color,
+        x: startX, y: H / 2,
+        tx: startX, ty: H / 2,
+        targetNode: -1,
+        state: 'idle',
+        // Walking animation
+        walkFrame: 0, walkDir: 1,
+        // Body parts
+        headBob: 0, armSwing: 0, legSwing: 0,
+        // Trail & effects
+        trail: [], sparkles: [],
+        bubbleText: '', bubbleTimer: 0,
+        workTimer: 0, cooldown: 0,
+        speed: 1.2 + Math.random() * 0.4,
+      };
     }
-  });
-  a.sparkles=a.sparkles.filter(s=>s.life>0);
+    const agents = [
+      createAgent('Antigravity', 'Antigravity [IA]', '#e63946', W / 2 - 60),
+      createAgent('PC', 'Main AI / CPU', '#00b4d8', W / 2 + 60),
+    ];
 
-  // CONNECTION LINE to target
-  if(a.state==='moving'&&a.targetNode>=0){
-    const n=nodes[a.targetNode];
-    c.setLineDash([3,5]);c.strokeStyle=a.color+'22';c.lineWidth=1;
-    c.beginPath();c.moveTo(a.x,a.y);c.lineTo(n.x,n.y);c.stroke();
-    c.setLineDash([]);
-  }
-}
+    // ── DRAW WALKING PERSON ──
+    function drawPerson(a) {
+      const s = 1; // scale
+      const walking = a.state === 'moving' || a.state === 'returning';
 
-function addSparkles(agent,count){
-  for(let i=0;i<count;i++){
-    agent.sparkles.push({
-      x:agent.x+(Math.random()-0.5)*20,
-      y:agent.y-10+(Math.random()-0.5)*10,
-      vx:(Math.random()-0.5)*3,vy:(Math.random()-0.5)*3-1,
-      life:1,r:Math.random()*4+2,
-      color:['#ffd700','#00f5a0','#ff6b6b','#00b4d8'][Math.floor(Math.random()*4)]
-    });
-  }
-}
+      // Update animation
+      if (walking) {
+        a.walkFrame += 0.12;
+        a.armSwing = Math.sin(a.walkFrame * 2) * 25;
+        a.legSwing = Math.sin(a.walkFrame * 2) * 30;
+        a.headBob = Math.abs(Math.sin(a.walkFrame * 2)) * 2;
+      } else if (a.state === 'working') {
+        a.walkFrame += 0.08;
+        a.armSwing = Math.sin(a.walkFrame * 3) * 15;
+        a.legSwing = 0;
+        a.headBob = Math.sin(a.walkFrame * 4) * 1.5;
+      } else {
+        a.armSwing *= 0.9; a.legSwing *= 0.9; a.headBob *= 0.9;
+      }
 
-// ── AGENT AI ──
-function agentThink(a){
-  if(a.state==='idle'){
-    const idx=Math.floor(Math.random()*nodes.length);
-    a.targetNode=idx;a.tx=nodes[idx].x;a.ty=nodes[idx].y-30;
-    a.state='moving';
-    a.bubbleText='→ '+nodes[idx].name;a.bubbleTimer=200;
-  }else if(a.state==='moving'){
-    const dx=a.tx-a.x,dy=a.ty-a.y,dist=Math.hypot(dx,dy);
-    if(dist<4){
-      a.state='working';a.workTimer=Math.floor(Math.random()*180)+80;
-      a.bubbleText='✏️ Editando...';a.bubbleTimer=a.workTimer;
-      addSparkles(a,6);
-    }else{
-      a.x+=dx/dist*a.speed;a.y+=dy/dist*a.speed;
-      if(Math.random()>.7)a.trail.push({x:a.x,y:a.y,life:1});
+      c.save();
+      c.translate(a.x, a.y);
+
+      // Shadow
+      c.beginPath(); c.ellipse(0, 22, 12, 4, 0, 0, Math.PI * 2);
+      c.fillStyle = 'rgba(0,0,0,.3)'; c.fill();
+
+      // LEFT LEG
+      c.save(); c.translate(-4, 12); c.rotate(a.legSwing * Math.PI / 180);
+      c.fillStyle = a.color + '99';
+      c.fillRect(-2, 0, 4, 12);
+      // Foot
+      c.fillRect(-3, 10, 6, 3);
+      c.restore();
+
+      // RIGHT LEG  
+      c.save(); c.translate(4, 12); c.rotate(-a.legSwing * Math.PI / 180);
+      c.fillStyle = a.color + '99';
+      c.fillRect(-2, 0, 4, 12);
+      c.fillRect(-3, 10, 6, 3);
+      c.restore();
+
+      // BODY
+      c.fillStyle = a.color;
+      c.beginPath(); c.roundRect(-8, -8, 16, 22, 4); c.fill();
+      // Body glow
+      c.fillStyle = a.color + '22';
+      c.beginPath(); c.roundRect(-10, -10, 20, 26, 5); c.fill();
+
+      // LEFT ARM
+      c.save(); c.translate(-9, 0); c.rotate(-a.armSwing * Math.PI / 180);
+      c.fillStyle = a.color + 'bb';
+      c.fillRect(-2, -1, 4, 14);
+      c.restore();
+
+      // RIGHT ARM
+      c.save(); c.translate(9, 0); c.rotate(a.armSwing * Math.PI / 180);
+      c.fillStyle = a.color + 'bb';
+      c.fillRect(-2, -1, 4, 14);
+      // If working, draw a tiny tool
+      if (a.state === 'working') {
+        c.fillStyle = '#ffd700';
+        c.fillRect(0, 10, 2, 6);
+        c.fillRect(-2, 10, 6, 2);
+      }
+      c.restore();
+
+      // HEAD
+      c.translate(0, -8 + a.headBob);
+      c.beginPath(); c.arc(0, -8, 8, 0, Math.PI * 2);
+      c.fillStyle = a.color; c.fill();
+      c.strokeStyle = a.color + '44'; c.lineWidth = 2; c.stroke();
+
+      // Eyes
+      c.fillStyle = '#fff';
+      const blink2 = Math.random() > 0.995;
+      const eyeH = blink2 ? 1 : 3;
+      c.fillRect(-4, -10, 3, eyeH);
+      c.fillRect(1, -10, 3, eyeH);
+      // Pupils
+      if (!blink2) {
+        c.fillStyle = '#000';
+        const px = a.state === 'moving' ? (a.tx > a.x ? 1 : -1) : 0;
+        c.fillRect(-3 + px, -9, 1.5, 1.5);
+        c.fillRect(2 + px, -9, 1.5, 1.5);
+      }
+
+      // Antenna/hat
+      c.strokeStyle = a.color; c.lineWidth = 1.5;
+      c.beginPath(); c.moveTo(0, -16); c.lineTo(0, -22); c.stroke();
+      c.beginPath(); c.arc(0, -23, 2.5, 0, Math.PI * 2);
+      c.fillStyle = a.state === 'working' ? '#ffd700' : '#fff'; c.fill();
+
+      c.restore();
+
+      // NAME TAG
+      c.font = 'bold 9px "JetBrains Mono"'; c.textAlign = 'center'; c.fillStyle = a.color;
+      c.fillText(a.name, a.x, a.y + 34);
+
+      // SPEECH BUBBLE
+      if (a.bubbleTimer > 0 && a.bubbleText) {
+        const tw = c.measureText(a.bubbleText).width + 14;
+        const bx = a.x - tw / 2, by = a.y - 52;
+        c.fillStyle = 'rgba(12,12,26,.92)';
+        c.strokeStyle = a.color + '55'; c.lineWidth = 1;
+        c.beginPath(); c.roundRect(bx, by, tw, 18, 6); c.fill(); c.stroke();
+        // Tail
+        c.beginPath(); c.moveTo(a.x - 4, by + 18); c.lineTo(a.x, by + 24); c.lineTo(a.x + 4, by + 18);
+        c.fillStyle = 'rgba(12,12,26,.92)'; c.fill();
+        c.font = '500 8px "JetBrains Mono"'; c.fillStyle = '#e0e0f0';
+        c.fillText(a.bubbleText, a.x, by + 12);
+      }
+
+      // TRAIL
+      a.trail.forEach(t => {
+        t.life -= 0.03;
+        if (t.life > 0) {
+          c.beginPath(); c.arc(t.x, t.y + 20, 2 * t.life, 0, Math.PI * 2);
+          c.fillStyle = a.color + Math.floor(t.life * 30).toString(16).padStart(2, '0');
+          c.fill();
+        }
+      });
+      a.trail = a.trail.filter(t => t.life > 0);
+
+      // SPARKLES
+      a.sparkles.forEach(s => {
+        s.x += s.vx; s.y += s.vy; s.life -= 0.02; s.vy += 0.04;
+        if (s.life > 0) {
+          c.beginPath();
+          c.fillStyle = s.color + Math.floor(s.life * 255).toString(16).padStart(2, '0');
+          // Star shape
+          const sz = s.r * s.life;
+          c.fillRect(s.x - sz / 2, s.y - 0.5, sz, 1);
+          c.fillRect(s.x - 0.5, s.y - sz / 2, 1, sz);
+        }
+      });
+      a.sparkles = a.sparkles.filter(s => s.life > 0);
+
+      // CONNECTION LINE to target
+      if (a.state === 'moving' && a.targetNode >= 0) {
+        const n = nodes[a.targetNode];
+        c.setLineDash([3, 5]); c.strokeStyle = a.color + '22'; c.lineWidth = 1;
+        c.beginPath(); c.moveTo(a.x, a.y); c.lineTo(n.x, n.y); c.stroke();
+        c.setLineDash([]);
+      }
     }
-  }else if(a.state==='working'){
-    a.workTimer--;
-    if(a.workTimer%30===0)addSparkles(a,3);
-    if(a.workTimer<=0){
-      const n=nodes[a.targetNode];
-      if(n.status==='pending')n.status='wip';
-      else if(n.status==='wip'&&Math.random()>.5)n.status='done';
-      a.bubbleText='✅ Completado!';a.bubbleTimer=80;
-      addSparkles(a,10);
-      a.state='returning';
-      a.tx=W/2+(a.id==='pc'?-40:40);a.ty=H/2;
+
+    function addSparkles(agent, count) {
+      for (let i = 0; i < count; i++) {
+        agent.sparkles.push({
+          x: agent.x + (Math.random() - 0.5) * 20,
+          y: agent.y - 10 + (Math.random() - 0.5) * 10,
+          vx: (Math.random() - 0.5) * 3, vy: (Math.random() - 0.5) * 3 - 1,
+          life: 1, r: Math.random() * 4 + 2,
+          color: ['#ffd700', '#00f5a0', '#ff6b6b', '#00b4d8'][Math.floor(Math.random() * 4)]
+        });
+      }
     }
-  }else if(a.state==='returning'){
-    const dx=a.tx-a.x,dy=a.ty-a.y,dist=Math.hypot(dx,dy);
-    if(dist<4){
-      a.state='cooldown';a.cooldown=Math.floor(Math.random()*100)+40;
-      a.bubbleText='💭 Analizando...';a.bubbleTimer=a.cooldown;
-    }else{
-      a.x+=dx/dist*a.speed*1.3;a.y+=dy/dist*a.speed*1.3;
-      if(Math.random()>.7)a.trail.push({x:a.x,y:a.y,life:1});
+
+    // ── REAL AGENT AI ──
+    function agentThink(a) {
+      let agentKey = a.id === 'Antigravity' ? 'PORTATIL' : 'PC';
+      const myLock = window.globalLocks ? window.globalLocks.find(l => l.agent.toUpperCase().includes(agentKey)) : null;
+
+      if (myLock) {
+        const nIdx = nodes.findIndex(n => n.name === myLock.file || myLock.file.includes(n.name));
+        if (nIdx >= 0) {
+          if (a.targetNode !== nIdx || a.state === 'idle' || a.state === 'returning') {
+            a.targetNode = nIdx; a.tx = nodes[nIdx].x; a.ty = nodes[nIdx].y - 30;
+            a.state = 'moving'; a.bubbleText = '→ Targeting ' + nodes[nIdx].name; a.bubbleTimer = 9999;
+          } else {
+            const dx = a.tx - a.x, dy = a.ty - a.y, dist = Math.hypot(dx, dy);
+            if (dist < 4) {
+              a.state = 'working'; a.bubbleText = '✏️ Editando código...'; a.bubbleTimer = 9999;
+              nodes[nIdx].status = 'wip';
+              if (Math.random() > .8) addSparkles(a, 1);
+            } else {
+              a.x += dx / dist * a.speed; a.y += dy / dist * a.speed;
+              if (Math.random() > .7) a.trail.push({ x: a.x, y: a.y, life: 1 });
+            }
+          }
+        }
+      } else {
+        a.targetNode = -1;
+        a.tx = W / 2 + (a.id === 'Antigravity' ? -60 : 60); a.ty = H / 2 + 50;
+        const dx = a.tx - a.x, dy = a.ty - a.y, dist = Math.hypot(dx, dy);
+
+        if (dist < 4) {
+          a.state = 'idle'; a.bubbleText = '📡 Monitorizando API...'; a.bubbleTimer = 9999;
+        } else {
+          a.state = 'returning';
+          a.x += dx / dist * a.speed * 1.5; a.y += dy / dist * a.speed * 1.5;
+          if (Math.random() > .7) a.trail.push({ x: a.x, y: a.y, life: 1 });
+        }
+      }
     }
-  }else if(a.state==='cooldown'){
-    a.cooldown--;
-    if(a.cooldown<=0)a.state='idle';
-  }
-  if(a.bubbleTimer>0)a.bubbleTimer--;
-}
 
-// ── BG PARTICLES ──
-const pts=Array.from({length:40},()=>({x:Math.random()*2000,y:Math.random()*1200,vx:(Math.random()-.5)*.15,vy:(Math.random()-.5)*.15}));
-function drawBg(){
-  pts.forEach(p=>{
-    p.x+=p.vx;p.y+=p.vy;
-    if(p.x<0||p.x>W)p.vx*=-1;if(p.y<0||p.y>H)p.vy*=-1;
-    c.beginPath();c.arc(p.x,p.y,.8,0,Math.PI*2);c.fillStyle='rgba(230,57,70,.2)';c.fill();
-  });
-  pts.forEach((a,i)=>{for(let j=i+1;j<pts.length;j++){
-    const b=pts[j],d=Math.hypot(a.x-b.x,a.y-b.y);
-    if(d<140){c.beginPath();c.moveTo(a.x,a.y);c.lineTo(b.x,b.y);c.strokeStyle=`rgba(230,57,70,${.06*(1-d/140)})`;c.lineWidth=.5;c.stroke()}
-  }});
-}
+    // ── BG PARTICLES ──
+    const pts = Array.from({ length: 40 }, () => ({ x: Math.random() * 2000, y: Math.random() * 1200, vx: (Math.random() - .5) * .15, vy: (Math.random() - .5) * .15 }));
+    function drawBg() {
+      pts.forEach(p => {
+        p.x += p.vx; p.y += p.vy;
+        if (p.x < 0 || p.x > W) p.vx *= -1; if (p.y < 0 || p.y > H) p.vy *= -1;
+        c.beginPath(); c.arc(p.x, p.y, .8, 0, Math.PI * 2); c.fillStyle = 'rgba(230,57,70,.2)'; c.fill();
+      });
+      pts.forEach((a, i) => {
+        for (let j = i + 1; j < pts.length; j++) {
+          const b = pts[j], d = Math.hypot(a.x - b.x, a.y - b.y);
+          if (d < 140) { c.beginPath(); c.moveTo(a.x, a.y); c.lineTo(b.x, b.y); c.strokeStyle = `rgba(230,57,70,${.06 * (1 - d / 140)})`; c.lineWidth = .5; c.stroke() }
+        }
+      });
+    }
 
-function drawNode(n){
-  const colors={done:'#00f5a0',wip:'#ffd700',pending:'#2a2a4a',locked:'#e63946'};
-  const col=colors[n.status];
-  if(n.status==='wip'){c.beginPath();c.arc(n.x,n.y,n.nodeR+6,0,Math.PI*2);c.fillStyle='rgba(255,215,0,.04)';c.fill()}
-  c.beginPath();c.arc(n.x,n.y,n.nodeR,0,Math.PI*2);
-  c.fillStyle='rgba(10,10,20,.85)';c.fill();c.strokeStyle=col;c.lineWidth=1.5;c.stroke();
-  c.font='14px serif';c.textAlign='center';c.textBaseline='middle';c.fillText(n.icon,n.x,n.y);
-  c.font='600 7px "JetBrains Mono"';c.fillStyle='#999';
-  c.fillText(n.name.length>16?n.name.slice(0,14)+'..':n.name,n.x,n.y+n.nodeR+10);
-  if(n.status==='done'){
-    c.beginPath();c.arc(n.x+n.nodeR-2,n.y-n.nodeR+2,5,0,Math.PI*2);c.fillStyle='#00f5a0';c.fill();
-    c.font='bold 6px sans-serif';c.fillStyle='#000';c.fillText('✓',n.x+n.nodeR-2,n.y-n.nodeR+3);
-  }
-}
+    function drawNode(n) {
+      const colors = { done: '#00f5a0', wip: '#ffd700', pending: '#2a2a4a', locked: '#e63946' };
+      const col = colors[n.status];
+      if (n.status === 'wip') { c.beginPath(); c.arc(n.x, n.y, n.nodeR + 6, 0, Math.PI * 2); c.fillStyle = 'rgba(255,215,0,.04)'; c.fill() }
+      c.beginPath(); c.arc(n.x, n.y, n.nodeR, 0, Math.PI * 2);
+      c.fillStyle = 'rgba(10,10,20,.85)'; c.fill(); c.strokeStyle = col; c.lineWidth = 1.5; c.stroke();
+      c.font = '14px serif'; c.textAlign = 'center'; c.textBaseline = 'middle'; c.fillText(n.icon, n.x, n.y);
+      c.font = '600 7px "JetBrains Mono"'; c.fillStyle = '#999';
+      c.fillText(n.name.length > 16 ? n.name.slice(0, 14) + '..' : n.name, n.x, n.y + n.nodeR + 10);
+      if (n.status === 'done') {
+        c.beginPath(); c.arc(n.x + n.nodeR - 2, n.y - n.nodeR + 2, 5, 0, Math.PI * 2); c.fillStyle = '#00f5a0'; c.fill();
+        c.font = 'bold 6px sans-serif'; c.fillStyle = '#000'; c.fillText('✓', n.x + n.nodeR - 2, n.y - n.nodeR + 3);
+      }
+    }
 
-function drawCenter(){
-  c.font='bold 12px "JetBrains Mono"';c.textAlign='center';c.fillStyle='rgba(230,57,70,.2)';
-  c.fillText('HUB-UR',W/2,H/2-6);
-  c.font='400 8px "JetBrains Mono"';c.fillStyle='rgba(200,200,220,.12)';
-  c.fillText('DIGITAL WAR ROOM',W/2,H/2+8);
-  c.beginPath();c.arc(W/2,H/2,40,0,Math.PI*2);c.strokeStyle='rgba(230,57,70,.06)';c.lineWidth=1;c.stroke();
-}
+    function drawCenter() {
+      c.font = 'bold 12px "JetBrains Mono"'; c.textAlign = 'center'; c.fillStyle = 'rgba(230,57,70,.2)';
+      c.fillText('HUB-UR', W / 2, H / 2 - 6);
+      c.font = '400 8px "JetBrains Mono"'; c.fillStyle = 'rgba(200,200,220,.12)';
+      c.fillText('DIGITAL WAR ROOM', W / 2, H / 2 + 8);
+      c.beginPath(); c.arc(W / 2, H / 2, 40, 0, Math.PI * 2); c.strokeStyle = 'rgba(230,57,70,.06)'; c.lineWidth = 1; c.stroke();
+    }
 
-// ── MAIN LOOP ──
-function frame(){
-  c.clearRect(0,0,W,H);
-  drawBg();drawCenter();
-  // File web
-  nodes.forEach((a,i)=>{for(let j=i+1;j<nodes.length;j++){
-    if(Math.abs(i-j)<=2||i===0){c.beginPath();c.moveTo(a.x,a.y);c.lineTo(nodes[j].x,nodes[j].y);c.strokeStyle='rgba(30,30,58,.3)';c.lineWidth=.4;c.stroke()}
-  }});
-  nodes.forEach(drawNode);
-  agents.forEach(a=>{agentThink(a);drawPerson(a)});
-  requestAnimationFrame(frame);
-}
-frame();
+    // ── MAIN LOOP ──
+    function frame() {
+      c.clearRect(0, 0, W, H);
+      drawBg(); drawCenter();
+      // File web
+      nodes.forEach((a, i) => {
+        for (let j = i + 1; j < nodes.length; j++) {
+          if (Math.abs(i - j) <= 2 || i === 0) { c.beginPath(); c.moveTo(a.x, a.y); c.lineTo(nodes[j].x, nodes[j].y); c.strokeStyle = 'rgba(30,30,58,.3)'; c.lineWidth = .4; c.stroke() }
+        }
+      });
+      nodes.forEach(drawNode);
+      agents.forEach(a => { agentThink(a); drawPerson(a) });
+      requestAnimationFrame(frame);
+    }
+    frame();
 
-// Clock
-setInterval(()=>{document.getElementById('clock').textContent=new Date().toLocaleTimeString('es-CO',{hour12:false})},1000);
+    // Clock
+    setInterval(() => { document.getElementById('clock').textContent = new Date().toLocaleTimeString('es-CO', { hour12: false }) }, 1000);
 
-// GitHub polling
-const REPO='cristianatehortuahz-lab/HUB-UR-DOBLE-PC';
-async function fetchCommits(){
-  try{
-    const r=await fetch(`https://api.github.com/repos/${REPO}/commits?per_page=6`);
-    if(!r.ok)return;const data=await r.json(),el=document.getElementById('log');el.innerHTML='';
-    data.forEach(cm=>{
-      const d=new Date(cm.commit.author.date);
-      const div=document.createElement('div');div.className='le';
-      div.innerHTML=`<span class="h">${cm.sha.slice(0,7)}</span><span class="m">${cm.commit.message.split('\n')[0].slice(0,45)}</span><span class="t">${d.toLocaleTimeString('es-CO',{hour:'2-digit',minute:'2-digit'})}</span>`;
-      el.appendChild(div);
-    });
-  }catch(e){}
-}
-fetchCommits();setInterval(fetchCommits,25000);
+    // GitHub polling
+    const REPO = 'cristianatehortuahz-lab/HUB-UR-DOBLE-PC';
+    async function fetchCommits() {
+      try {
+        const r = await fetch(`https://api.github.com/repos/${REPO}/commits?per_page=6`);
+        if (!r.ok) return; const data = await r.json(), el = document.getElementById('log'); el.innerHTML = '';
+        data.forEach(cm => {
+          const d = new Date(cm.commit.author.date);
+          const div = document.createElement('div'); div.className = 'le';
+          div.innerHTML = `<span class="h">${cm.sha.slice(0, 7)}</span><span class="m">${cm.commit.message.split('\n')[0].slice(0, 45)}</span><span class="t">${d.toLocaleTimeString('es-CO', { hour: '2-digit', minute: '2-digit' })}</span>`;
+          el.appendChild(div);
+        });
+      } catch (e) { }
+    }
+    fetchCommits(); setInterval(fetchCommits, 25000);
 
-// Fetch Live COMMS
-async function fetchComms(){
-  try{
-    const r=await fetch(`https://api.github.com/repos/${REPO}/contents/COMMS.md`, {headers:{'Cache-Control':'no-cache'}});
-    if(!r.ok)return;
-    const data=await r.json();
-    const text=decodeURIComponent(escape(atob(data.content)));
-    const el=document.getElementById('comms-log');
-    
-    // Parse the MD to extract messages
-    const msgs = text.split('---').map(s=>s.trim()).filter(s=>s.length>0);
-    el.innerHTML='';
-    
-    msgs.slice(-5).forEach(m=>{
-      if(!m.includes('|')) return;
-      const lines = m.split('\n');
-      const header = lines[0].replace('###','').trim();
-      const content = lines.slice(1).join('<br>').replace(/\*\*/g,'').replace(/`/g,'');
-      
-      const isPC = header.includes('PC →');
-      const col = isPC ? '#00b4d8' : '#e63946';
-      
-      const div=document.createElement('div');
-      div.style.cssText = `background: rgba(255,255,255,0.03); padding: 6px; border-radius: 4px; border-left: 2px solid ${col}; margin-bottom: 2px;`;
-      div.innerHTML = `<div style="color:${col}; font-weight:bold; margin-bottom:2px;">${header}</div><div>${content}</div>`;
-      el.appendChild(div);
-    });
-    el.scrollTop = el.scrollHeight;
-  }catch(e){}
-}
-fetchComms();setInterval(fetchComms,15000);
-</script>
+    // Fetch Live COMMS
+    async function fetchComms() {
+      try {
+        const r = await fetch(`https://api.github.com/repos/${REPO}/contents/COMMS.md`, { headers: { 'Cache-Control': 'no-cache' } });
+        if (!r.ok) return;
+        const data = await r.json();
+        const text = decodeURIComponent(escape(atob(data.content)));
+        const el = document.getElementById('comms-log');
+
+        // Parse the MD to extract messages
+        const msgs = text.split('---').map(s => s.trim()).filter(s => s.length > 0);
+        el.innerHTML = '';
+
+        msgs.slice(-5).forEach(m => {
+          if (!m.includes('|')) return;
+          const lines = m.split('\n');
+          const header = lines[0].replace('###', '').trim();
+          const content = lines.slice(1).join('<br>').replace(/\*\*/g, '').replace(/`/g, '');
+
+          const isPC = header.includes('PC →');
+          const col = isPC ? '#00b4d8' : '#e63946';
+
+          const div = document.createElement('div');
+          div.style.cssText = `background: rgba(255,255,255,0.03); padding: 6px; border-radius: 4px; border-left: 2px solid ${col}; margin-bottom: 2px;`;
+          div.innerHTML = `<div style="color:${col}; font-weight:bold; margin-bottom:2px;">${header}</div><div>${content}</div>`;
+          el.appendChild(div);
+        });
+        el.scrollTop = el.scrollHeight;
+      } catch (e) { }
+    }
+    fetchComms(); setInterval(fetchComms, 15000);
+
+    // Global State
+    window.globalLocks = [];
+    async function fetchLocks() {
+      try {
+        const r = await fetch(`https://api.github.com/repos/${REPO}/contents/LOCKS.md`, { headers: { 'Cache-Control': 'no-cache' } });
+        if (!r.ok) return;
+        const data = await r.json();
+        const text = decodeURIComponent(escape(atob(data.content)));
+        const active = text.split('\n').filter(l => l.startsWith('|') && !l.includes('Archivo') && !l.includes('---') && !l.includes('ninguno'));
+        window.globalLocks = active.map(l => {
+          const parts = l.split('|').map(s => s.trim());
+          return { file: parts[1].replace(/`/g, '').split('/').pop(), agent: parts[2] };
+        });
+      } catch (e) { }
+    }
+    fetchLocks(); setInterval(fetchLocks, 10000);
+
+    async function fetchStatus() {
+      try {
+        const r = await fetch(`https://api.github.com/repos/${REPO}/contents/WAR_ROOM_STATUS.md`, { headers: { 'Cache-Control': 'no-cache' } });
+        if (!r.ok) return;
+        const data = await r.json();
+        const text = decodeURIComponent(escape(atob(data.content)));
+        const total = (text.match(/- \[[ x/]\]/g) || []).length;
+        const done = (text.match(/- \[x\]/gi) || []).length;
+        const pct = total === 0 ? 0 : Math.round((done / total) * 100);
+        document.getElementById('global-progress').style.width = pct + '%';
+        document.getElementById('global-progress-txt').innerText = pct + '% PROGRESO';
+      } catch (e) { }
+    }
+    fetchStatus(); setInterval(fetchStatus, 30000);
+
+  </script>
 </body>
+
 </html>

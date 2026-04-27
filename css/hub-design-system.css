@@ -828,3 +828,46 @@ html {
 .stats-number {
   font-weight: 900;
 }
+
+/* ── 12. RESPONSIVE DESIGN (100%) ───────────────────────── */
+@media (max-width: 768px) {
+  #intro-container {
+    padding: 60px 15px;
+  }
+
+  .services-panel .container {
+    padding: 30px 15px;
+  }
+
+  .services-panel .titleServices h1 {
+    font-size: 1.8rem;
+  }
+
+  .services-panel .services-grid {
+    grid-template-columns: 1fr;
+    gap: 16px;
+  }
+
+  #list-stats {
+    gap: 20px;
+    flex-direction: column;
+  }
+
+  #list-stats .stats-item {
+    width: 100%;
+    margin-bottom: 12px;
+  }
+
+  #list-stats .stats-count {
+    font-size: 1.8rem;
+  }
+
+  .header-brand {
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  .lineaVertical {
+    display: none;
+  }
+}
