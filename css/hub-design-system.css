@@ -871,3 +871,30 @@ html {
     display: none;
   }
 }
+
+/* ── 13. CO-AUTHOR MAP UI ───────────────────────────────── */
+body.hub-map-fullscreen #wrapper-content,
+body.hub-map-fullscreen #content,
+body.hub-map-fullscreen #content-wrapper,
+body.hub-map-fullscreen #main-content,
+body.hub-map-fullscreen .contentsBrowse,
+body.hub-map-fullscreen #pageContent {
+  padding: 0 !important;
+  margin: 0 !important;
+  max-width: 100% !important;
+  width: 100% !important;
+}
+
+#mapa-coautores-container {
+  width: 100%;
+  height: 85vh;
+  min-height: 800px;
+  border: none;
+  display: block;
+  overflow: hidden;
+}
+#mapa-coautores-container iframe {
+  width: 100%;
+  height: 100%;
+  border: none;
+}
