@@ -512,19 +512,27 @@
 
     // ── REAL AGENT AI ──
     function agentThink(a) {
-      let agentKey = a.id === 'Antigravity' ? 'PORTATIL' : 'PC';
-      const myLock = window.globalLocks ? window.globalLocks.find(l => l.agent.toUpperCase().includes(agentKey)) : null;
+      let myTasks = [];
+      if (window.activeTasks) {
+         // Obtiene la última tarea asignada a este agente en COMMS.md
+         const agentTasks = window.activeTasks.filter(t => t.agent === a.id);
+         if (agentTasks.length > 0) {
+             myTasks = agentTasks[agentTasks.length - 1].files;
+         }
+      }
 
-      if (myLock) {
-        const nIdx = nodes.findIndex(n => n.name === myLock.file || myLock.file.includes(n.name));
+      // 1. SI TIENE UNA TAREA REAL (Parseada de COMMS.md)
+      if (myTasks.length > 0) {
+        // Buscar si algún archivo coincide con los nodos en pantalla
+        const nIdx = nodes.findIndex(n => myTasks.some(f => f.includes(n.name) || n.name.includes(f)));
         if (nIdx >= 0) {
           if (a.targetNode !== nIdx || a.state === 'idle' || a.state === 'returning') {
             a.targetNode = nIdx; a.tx = nodes[nIdx].x; a.ty = nodes[nIdx].y - 30;
-            a.state = 'moving'; a.bubbleText = '→ Targeting ' + nodes[nIdx].name; a.bubbleTimer = 9999;
+            a.state = 'moving'; a.bubbleText = '→ ' + nodes[nIdx].name; a.bubbleTimer = 9999;
           } else {
             const dx = a.tx - a.x, dy = a.ty - a.y, dist = Math.hypot(dx, dy);
             if (dist < 4) {
-              a.state = 'working'; a.bubbleText = '✏️ Editando código...'; a.bubbleTimer = 9999;
+              a.state = 'working'; a.bubbleText = '✏️ ' + nodes[nIdx].name; a.bubbleTimer = 9999;
               nodes[nIdx].status = 'wip';
               if (Math.random() > .8) addSparkles(a, 1);
             } else {
@@ -532,19 +540,48 @@
               if (Math.random() > .7) a.trail.push({ x: a.x, y: a.y, life: 1 });
             }
           }
+          return;
         }
-      } else {
-        a.targetNode = -1;
-        a.tx = W / 2 + (a.id === 'Antigravity' ? -60 : 60); a.ty = H / 2 + 50;
-        const dx = a.tx - a.x, dy = a.ty - a.y, dist = Math.hypot(dx, dy);
+      }
 
-        if (dist < 4) {
-          a.state = 'idle'; a.bubbleText = '📡 Monitorizando API...'; a.bubbleTimer = 9999;
-        } else {
-          a.state = 'returning';
-          a.x += dx / dist * a.speed * 1.5; a.y += dy / dist * a.speed * 1.5;
-          if (Math.random() > .7) a.trail.push({ x: a.x, y: a.y, life: 1 });
-        }
+      // 2. SI NO TIENE TAREA, LOS AGENTES AUDITORES (DeepSeek/ClaudeCode) REVISAN NODOS ALEATORIAMENTE
+      if (myTasks.length === 0 && (a.id === 'DeepSeek' || a.id === 'ClaudeCode')) {
+         if (Math.random() < 0.005 && a.state === 'idle') {
+             a.targetNode = Math.floor(Math.random() * nodes.length);
+             a.tx = nodes[a.targetNode].x; a.ty = nodes[a.targetNode].y - 30;
+             a.state = 'moving'; a.bubbleText = '🔍 Auditando...'; a.bubbleTimer = 200;
+             a.workTimer = 0;
+         }
+         if (a.targetNode >= 0 && a.state !== 'returning') {
+             const dx = a.tx - a.x, dy = a.ty - a.y, dist = Math.hypot(dx, dy);
+             if (dist < 4) {
+               a.state = 'working'; a.bubbleText = '✅ Auditado'; a.bubbleTimer = 100;
+               if (a.workTimer++ > 150) { a.targetNode = -1; a.state = 'returning'; } // Termina de auditar
+             } else {
+               a.x += dx / dist * a.speed; a.y += dy / dist * a.speed;
+             }
+             return;
+         }
+      }
+
+      // 3. RETORNAR A LA BASE SI ESTÁ OCIOSO
+      a.targetNode = -1;
+      const basePositions = {
+         'Gemini': {x: -120, y: 50},
+         'Claude35': {x: -40, y: -50},
+         'ClaudeCode': {x: 40, y: 50},
+         'DeepSeek': {x: 120, y: -50}
+      };
+      const pos = basePositions[a.id] || {x: 0, y: 50};
+      a.tx = W / 2 + pos.x; a.ty = H / 2 + pos.y;
+      const dx = a.tx - a.x, dy = a.ty - a.y, dist = Math.hypot(dx, dy);
+
+      if (dist < 4) {
+        a.state = 'idle'; a.bubbleText = '📡 Standby...'; a.bubbleTimer = 9999;
+      } else {
+        a.state = 'returning';
+        a.x += dx / dist * a.speed * 1.5; a.y += dy / dist * a.speed * 1.5;
+        if (Math.random() > .7) a.trail.push({ x: a.x, y: a.y, life: 1 });
       }
     }
 
@@ -634,6 +671,7 @@
         // Parse the MD to extract messages
         const msgs = text.split('---').map(s => s.trim()).filter(s => s.length > 0);
         el.innerHTML = '';
+        window.activeTasks = [];
 
         msgs.slice(-5).forEach(m => {
           if (!m.includes('|')) return;
@@ -641,7 +679,17 @@
           const header = lines[0].replace('###', '').trim();
           const content = lines.slice(1).join('<br>').replace(/\*\*/g, '').replace(/`/g, '');
 
-          const isPC = header.includes('PC →');
+          // Extraer tareas activas para la IA
+          let agentKey = null;
+          if (header.includes('PC') || header.includes('Gemini')) agentKey = 'Gemini';
+          if (header.includes('PORTÁTIL') || header.includes('Claude') || header.includes('PORTATIL')) agentKey = 'Claude35';
+          const filesLine = lines.find(l => l.includes('Archivos afectados:'));
+          if (filesLine && agentKey) {
+             const files = filesLine.replace('**Archivos afectados:**', '').replace(/`/g,'').split(',').map(f => f.trim().split('/').pop());
+             window.activeTasks.push({ agent: agentKey, files: files });
+          }
+
+          const isPC = header.includes('PC →') || header.includes('Gemini');
           const col = isPC ? '#00b4d8' : '#e63946';
 
           const div = document.createElement('div');
