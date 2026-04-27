@@ -162,7 +162,6 @@
                                     <li class="stats-item">
                                         <p  class="stats-count">
                                             <a href="/people" title="${group.displayName?capitalize}">
-                                                <img src="../themes/wilma/images/Estadistico/statsComunidadUR.jpg" alt="ImagenComunidadUR">
                                                 <p class="stats-number"> ${totalCount}</p>
                                                 <p class="stats-description">${i18n().URCommunity}</p>
                                             </a>
@@ -183,7 +182,6 @@
                                     <p  class="stats-count">
                                       <#--  <a href="/organizations#http://vivoweb.org/ontology/core#Program" title="${group.displayName?capitalize}">  -->
 					<a href="/individuallist?vclassId=http%3A%2F%2Fvivoweb.org%2Fontology%2Fcore%23Program" title="${group.displayName?capitalize}">
-                                            <img src="../themes/wilma/images/Estadistico/statsUnidadAcademico.jpg" alt="ImagenstatsUnidadAcademico">
                                             <p class="stats-number">${totalCountProgram}</p>
                                             <p class="stats-description">${i18n().academicProgram}</p>
                                             
@@ -193,7 +191,6 @@
                                 <li class="stats-item">
                                     <p class="stats-count">
                                         <a href="/organizations#http://vivoweb.org/ontology/core#CoreLaboratory" title="${group.displayName?capitalize}">
-                                            <img src="../themes/wilma/images/Estadistico/statsLaboratorio.jpg" alt="ImagenLaboratorio">
                                             <p class="stats-number">${totalCountCoreLaboratory}</p>
                                             <p class="stats-description">${i18n().laboratory}</p>
                                             <#--  ${class.displayName?capitalize}  -->
@@ -203,7 +200,6 @@
                             <#elseif group.uri?contains("http://vivoweb.org/ontology#vitroClassGrouppublications")>
                                 <li class="stats-item">
                                     <a href="/research" title="${group.displayName?capitalize}">
-                                        <img src="../themes/wilma/images/Estadistico/statsPublicaciones.jpg" alt="ImagenPublicacion">
                                         <#--  ${group.individualCount}  -->
                                         <p  class="stats-number">
                                                 <#--  <#if (group.individualCount > 10000) >

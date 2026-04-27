@@ -146,7 +146,7 @@ ${headScripts.add('<script type="text/javascript" src="${urls.base}/js/bootstrap
             <h3>Tipo de resultado</h3>
         </div>
         <div class="header-main-info">
-            <h1 class="hub-results-count" style="font-size: 11.5px !important; color: #6b7280 !important; margin: 0 !important; line-height: normal !important; white-space: nowrap !important; font-weight: 500 !important;">
+            <h1 class="hub-results-count">
                 ${(hitCount!0)?c} resultados encontrados <#if querytext?has_content>para <span class="hub-query-text">${querytext!""}</#if></span>
             </h1>
             <div class="header-utilities">
